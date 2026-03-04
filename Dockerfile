@@ -1,20 +1,28 @@
-﻿# Na imagem de runtime
+﻿FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /app
+
+# Copiar arquivos de projeto
+COPY *.sln .
+COPY PetMind.API/*.csproj ./PetMind.API/
+RUN dotnet restore
+
+# Copiar todo o código e publicar
+COPY . .
+WORKDIR /app/PetMind.API
+RUN dotnet publish -c Release -o /out
+
+# Imagem de runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# 🔥 Instalar o SDK e as ferramentas do EF Core
-RUN apt-get update && \
-    apt-get install -y wget && \
-    wget https://dot.net/v1/dotnet-install.sh && \
-    chmod +x dotnet-install.sh && \
-    ./dotnet-install.sh --channel 10.0 --install-dir /usr/share/dotnet && \
-    ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
-
+# 🔥 APENAS instalar as ferramentas EF Core (sem reinstalar o SDK!)
 ENV PATH="${PATH}:/root/.dotnet/tools"
-RUN dotnet tool install --global dotnet-ef --version 10.0.0
+RUN dotnet tool install --global dotnet-ef --version 10.0.0 || true
 
 # Copiar os arquivos publicados
 COPY --from=build /out .
+
+# Script de entrada
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 

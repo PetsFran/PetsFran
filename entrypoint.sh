@@ -6,6 +6,3 @@ dotnet ef database update --no-build
 
 echo "Iniciando a aplicação..."
 dotnet PetMind.API.dll
-
-# Dar permissão de execução
-chmod +x entrypoint.sh
