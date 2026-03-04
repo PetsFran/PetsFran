@@ -1,29 +1,36 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+﻿# Estágio de build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
-# Copiar arquivos de projeto
+# Copiar arquivos de projeto e restaurar dependências
 COPY *.sln .
 COPY PetMind.API/*.csproj ./PetMind.API/
 RUN dotnet restore
 
-# Copiar todo o código e publicar
+# Instalar a ferramenta do EF Core globalmente e salvar em uma pasta local
+RUN dotnet tool install --global dotnet-ef --version 10.0.0
+
+# Copiar todo o código e publicar a aplicação
 COPY . .
 WORKDIR /app/PetMind.API
 RUN dotnet publish -c Release -o /out
 
-# Imagem de runtime
+# Estágio final (runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# 🔥 APENAS instalar as ferramentas EF Core (sem reinstalar o SDK!)
-ENV PATH="${PATH}:/root/.dotnet/tools"
-RUN dotnet tool install --global dotnet-ef --version 10.0.0 || true
+# Copiar a ferramenta do EF Core do estágio de build
+COPY --from=build /root/.dotnet/tools /root/.dotnet/tools
 
-# Copiar os arquivos publicados
+# Atualizar a variável de ambiente PATH para encontrar a ferramenta
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
+# Copiar a aplicação publicada do estágio de build
 COPY --from=build /out .
 
-# Script de entrada
+# Copiar e dar permissão ao script de entrada
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
-CMD ./entrypoint.sh
+# Comando de entrada
+CMD ["./entrypoint.sh"]
