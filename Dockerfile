@@ -7,8 +7,8 @@ COPY *.sln .
 COPY PetMind.API/*.csproj ./PetMind.API/
 RUN dotnet restore
 
-# Instalar a ferramenta do EF Core globalmente e salvar em uma pasta local
-RUN dotnet tool install --global dotnet-ef --version 10.0.0
+# (OPCIONAL, MAS ÚTIL) Instalar a ferramenta do EF Core localmente na pasta /app/tools
+RUN dotnet tool install --tool-path /app/tools dotnet-ef --version 10.0.0
 
 # Copiar todo o código e publicar a aplicação
 COPY . .
@@ -19,11 +19,8 @@ RUN dotnet publish -c Release -o /out
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Copiar a ferramenta do EF Core do estágio de build
-COPY --from=build /root/.dotnet/tools /root/.dotnet/tools
-
-# Atualizar a variável de ambiente PATH para encontrar a ferramenta
-ENV PATH="${PATH}:/root/.dotnet/tools"
+# Copiar a ferramenta do EF Core do estágio de build para uma pasta conhecida no runtime
+COPY --from=build /app/tools /app/tools
 
 # Copiar a aplicação publicada do estágio de build
 COPY --from=build /out .
