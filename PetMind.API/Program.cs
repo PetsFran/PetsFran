@@ -41,9 +41,9 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 // Configurar banco de dados
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                            ?? Environment.GetEnvironmentVariable("DATABASE_URL");
-    
+
     options.UseNpgsql(connectionString);
 });
 
@@ -192,6 +192,22 @@ if (app.Environment.IsDevelopment())
     });
 
     app.UseCors("AllowFrontend");
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try
+    {
+        // Aplica as migrações automaticamente
+        await dbContext.Database.MigrateAsync();
+        Console.WriteLine("Migrações aplicadas com sucesso!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro ao aplicar migrações: {ex.Message}");
+        // Não falha a aplicação se as migrações não funcionarem
+    }
 }
 
 app.UseHttpsRedirection();
