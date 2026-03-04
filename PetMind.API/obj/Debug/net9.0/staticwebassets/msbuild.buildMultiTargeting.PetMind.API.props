@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/PetMind.API.props" />
-</Project>

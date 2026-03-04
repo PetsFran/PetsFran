@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using PetMind.API.Models.DTOs.Auth;
 using PetMind.API.Models.Entities;
 

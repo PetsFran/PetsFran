@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using PetMind.API.Models;
 using PetMind.API.Models.Entities;
 using PetMind.API.Services.Data;

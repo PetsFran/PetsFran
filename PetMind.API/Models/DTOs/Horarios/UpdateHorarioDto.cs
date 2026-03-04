@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace PetMind.API.Models.DTOs.Horarios
@@ -9,9 +10,6 @@ namespace PetMind.API.Models.DTOs.Horarios
         public string ServicoBaseSelecionado { get; set; }
 
         public List<string> Adicionais { get; set; }
-
-        [Range(1, int.MaxValue, ErrorMessage = "ID do cachorro inválido")]
-        public int? CachorroId { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "ID do petshop inválido")]
         public int? PetShopId { get; set; }

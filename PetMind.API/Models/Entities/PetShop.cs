@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -15,6 +17,7 @@ public class PetShop
     [JsonIgnore] public string? RefreshTokenHash { get; set; }
     [JsonIgnore] public DateTime? RefreshTokenExpiryTime { get; set; }
 
-    public List<Horario> Horarios { get; set; } = new List<Horario>();
-    [JsonIgnore] public List<Cachorro> Cachorros { get; set; } = new List<Cachorro>();
+    // Corrigido: inicialização adequada
+    public List<Horario> Horarios { get; set; } = new();
+    [JsonIgnore] public List<Cachorro> Cachorros { get; set; } = new();
 }

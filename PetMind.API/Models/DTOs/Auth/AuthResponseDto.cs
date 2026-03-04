@@ -1,3 +1,4 @@
+using System;
 using PetMind.API.Models.DTOs.PetShops;
 
 namespace PetMind.API.Models.DTOs.Auth;

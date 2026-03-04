@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using PetMind.API.Models.DTOs.Horarios;
 
 namespace PetMind.API.Models.DTOs.PetShops

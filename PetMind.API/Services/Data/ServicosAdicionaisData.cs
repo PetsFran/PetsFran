@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace PetMind.API.Services.Data
 {
     public static class ServicosAdicionaisData

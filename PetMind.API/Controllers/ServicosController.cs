@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using PetMind.API.Data;
+using PetMind.API.Models.Entities;
 using PetMind.API.Services;
 
 namespace PetMind.API.Controllers;
@@ -26,4 +28,31 @@ public class ServicosController : ControllerBase
 
     [HttpGet("adicionais")]
     public List<string> GetAdicionais() => _calculaPrecosService.GetServicosAdicionais();
+    
+    [HttpPost("calcular-preco")]
+    public ActionResult<decimal> CalcularPreco([FromBody] CalculoPrecoRequest request)
+    {
+        // Criar um objeto Horario temporário para cálculo
+        var horarioTemp = new Horario
+        {
+            Cachorro = new Cachorro
+            {
+                Raca = request.Raca,
+                Porte = request.Porte
+            },
+            ServicoBaseSelecionado = request.ServicoBase,
+            Adicionais = request.Adicionais ?? new List<string>()
+        };
+    
+        var preco = _calculaPrecosService.GetPrecoTotalHorario(horarioTemp);
+        return Ok(preco);
+    }
+
+    public class CalculoPrecoRequest
+    {
+        public string Raca { get; set; } = string.Empty;
+        public string Porte { get; set; } = string.Empty;
+        public string ServicoBase { get; set; } = string.Empty;
+        public List<string>? Adicionais { get; set; }
+    }
 }

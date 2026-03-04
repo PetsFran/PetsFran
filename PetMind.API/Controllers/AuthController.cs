@@ -1,8 +1,12 @@
+using System;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetMind.API.Data;
-using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
 using PetMind.API.Models.DTOs.Auth;
 using PetMind.API.Services.Auth;
 
@@ -43,14 +47,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh")]
-    public async Task<ActionResult<AuthResponseDto>> Refresh(RefreshTokenDto dto)
+    public async Task<ActionResult<AuthResponseDto>> Refresh()
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        // Pode pegar do corpo OU do cookie
-        var refreshToken = dto.RefreshToken
-                           ?? Request.Cookies["refreshToken"];
+        // Pega APENAS do cookie, não precisa de body
+        var refreshToken = Request.Cookies["refreshToken"];
 
         if (string.IsNullOrEmpty(refreshToken))
             return BadRequest(new { Message = "Refresh token é obrigatório" });
