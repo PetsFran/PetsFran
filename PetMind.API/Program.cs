@@ -40,7 +40,12 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // Configurar banco de dados
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                           ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+    
+    options.UseNpgsql(connectionString);
+});
 
 // Configurar JWT Authentication (seu código existente)
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
