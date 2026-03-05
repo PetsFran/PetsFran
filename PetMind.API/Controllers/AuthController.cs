@@ -155,6 +155,13 @@ public class AuthController : ControllerBase
             PetShopId = User.FindFirst("PetShopId")?.Value
         });
     }
+    
+    [HttpGet("gerar-hash/{senha}")]
+    public IActionResult GerarHash(string senha)
+    {
+        var hash = BCrypt.Net.BCrypt.HashPassword(senha);
+        return Ok(new { senha, hash });
+    }
 
     // Método auxiliar para cookies
     private void SetRefreshTokenCookie(string refreshToken)

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PetMind.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c42829b884f05ab775fcfb90cc735fbcf8db92d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2e2c255c40de0b4928698b5700828d23f48226bc")]
 [assembly: System.Reflection.AssemblyProductAttribute("PetMind.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PetMind.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    
+
     // Se não encontrar ou tiver erro, tenta DATABASE_URL
     if (string.IsNullOrEmpty(connectionString))
     {
@@ -64,7 +65,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             }
         }
     }
-    
+
     options.UseNpgsql(connectionString);
 });
 
@@ -166,25 +167,24 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
+            var allowedOrigins = new List<string>();
+            
             if (builder.Environment.IsDevelopment())
             {
-                policy.WithOrigins(
-                        "http://localhost:4200"
-                    )
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
+                allowedOrigins.Add("http://localhost:4200");
             }
             else
             {
-                // Em produção, usar apenas o domínio do frontend
-                policy.WithOrigins(
-                        "https://petsfranagendamento.vercel.app"
-                    )
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
+                // Adicionar URLs permitidas em produção
+                allowedOrigins.Add("https://petsfranagendamento.vercel.app");
+                // Adicionar a própria URL da API se necessário
+                allowedOrigins.Add("https://petmind-production.up.railway.app");
             }
+            
+            policy.WithOrigins(allowedOrigins.ToArray())
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
         });
 });
 
@@ -211,9 +211,9 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "PetMind API V1");
         options.RoutePrefix = "swagger";
     });
-
-    app.UseCors("AllowFrontend");
 }
+
+app.UseCors("AllowFrontend");
 
 using (var scope = app.Services.CreateScope())
 {
