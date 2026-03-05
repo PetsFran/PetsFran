@@ -1,69 +1,76 @@
-# 📋 Sobre o Projeto
-Esta é uma API RESTful monolítica desenvolvida como base para um futuro refatoramento em Arquitetura Limpa. O sistema gerencia operações de petshops, incluindo cadastro de pets, agendamentos, autenticação e dashboard.
+# PetsFran.API
 
-### Nota Importante: Esta versão é intencionalmente NÃO seguindo Arquitetura Limpa. Ela serve como:
-- Ponto de partida para aprendizado
-- Baseline para refatoramento futuro
-- Exemplo didático de evolução arquitetural
+API do sistema de agendamento PetsFran.
 
-### Objetivos Pedagógicos
-Este projeto foi criado para demonstrar:
-- Evolução Gradual conforme a leitura do livro Arquitetura Limpa (Uncle Bob)
-- Evolução Arquitetural: Como migrar de monolito para arquitetura limpa
-- Refatoramento Passo a Passo: Identificar pontos de melhoria
-- Boas Práticas Progressivas: Implementar melhorias gradualmente
-- Code Smells: Exemplos comuns em aplicações monolíticas
+## 🚀 Tecnologias
+- ASP.NET Core 10
+- Entity Framework Core
+- PostgreSQL
+- JWT Authentication
+- Swagger/OpenAPI
 
-### Problemas Conhecidos (Intencionais)
-- Violação do SRP: Controllers com múltiplas responsabilidades
-- Acoplamento Forte: Dependência direta do EF Core
-- Ausência de Testabilidade: Difícil mockar dependências
-- Lógica Espalhada: Regras de negócio em vários lugares
-- Sem Abstrações: Implementações concretas em todo lugar
+## 📋 Pré-requisitos
+- .NET 10 SDK
+- PostgreSQL
+- Docker (opcional)
 
-## Endpoints da API
+## 🔧 Configuração
 
-### Autenticação (`/api/auth`)
-| Método | Endpoint | Descrição | Autenticação |
-|--------|----------|-----------|--------------|
-| `POST` | `/login` | Login com email e senha | ❌ Público |
-| `POST` | `/refresh` | Renovar tokens usando refresh token | ❌ Público |
-| `POST` | `/revoke` | Revogar refresh token | ✅ JWT |
-| `POST` | `/logout` | Logout e limpar tokens | ✅ JWT |
-| `GET` | `/validate` | Validar token atual | ✅ JWT |
-| `GET` | `/debug` | Debug de claims do token | ✅ JWT |
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/PetsFran/PetsFran.API.git
+   cd PetsFran.API
+   ```
 
-### Petshops (`/api/petshops`)
-| Método | Endpoint | Descrição | Autenticação |
-|--------|----------|-----------|--------------|
-| `GET` | `/` | Listar todos petshops | ✅ JWT |
-| `GET` | `/{id}` | Obter petshop por ID | ✅ JWT |
-| `GET` | `/{id}/dashboard` | Dashboard com estatísticas | ✅ JWT |
-| `POST` | `/` | Criar novo petshop | ❌ Público |
-| `PUT` | `/{id}` | Atualizar petshop | ✅ JWT |
-| `DELETE` | `/{id}` | Excluir petshop | ✅ JWT |
+2. **Configure o banco de dados**
+   - Altere a connection string no `appsettings.json`
+   - Ou configure a variável de ambiente `DATABASE_URL`
 
-### Cachorros (`/api/cachorros`)
-| Método | Endpoint | Descrição | Autenticação |
-|--------|----------|-----------|--------------|
-| `GET` | `/` | Listar todos os cachorros do petshop logado | ✅ JWT |
-| `GET` | `/{id}` | Obter cachorro por ID | ✅ JWT |
-| `GET` | `/meus` | Listar cachorros do petshop logado | ✅ JWT |
-| `GET` | `/por-raca?raca={nome}` | Filtrar cachorros por raça | ✅ JWT |
-| `GET` | `/por-porte?porte={tamanho}` | Filtrar cachorros por porte | ✅ JWT |
-| `GET` | `/estatisticas` | Estatísticas dos cachorros | ✅ JWT |
-| `POST` | `/` | Cadastrar novo cachorro | ✅ JWT |
-| `PUT` | `/{id}` | Atualizar cachorro | ✅ JWT |
-| `DELETE` | `/{id}` | Excluir cachorro | ✅ JWT |
+3. **Execute as migrações**
+   ```bash
+   dotnet ef database update
+   ```
 
-### Horários (`/api/horarios`)
-| Método | Endpoint | Descrição | Autenticação |
-|--------|----------|-----------|--------------|
-| `GET` | `/` | Listar horários do petshop logado (com paginação) | ✅ JWT |
-| `GET` | `/{id}` | Obter horário por ID | ✅ JWT |
-| `GET` | `/por-data?data={data}` | Buscar horários por data específica | ✅ JWT |
-| `POST` | `/` | Agendar novo horário | ✅ JWT |
-| `PUT` | `/{id}` | Atualizar horário | ✅ JWT |
-| `DELETE` | `/{id}` | Cancelar/excluir horário | ✅ JWT |
+4. **Execute a aplicação**
+   ```bash
+   dotnet run
+   ```
 
-Nota Pedagógica: Este projeto não deve ser usado em produção. Ele é um exercício intencionalmente "imperfeito" para fins educacionais.
+5. **Acesse a documentação**
+   - Swagger: http://localhost:5028/swagger
+   - Scalar: http://localhost:5028/scalar/v1
+
+## 🐳 Docker
+
+```bash
+# Build da imagem
+docker build -t petsfran-api .
+
+# Executar container
+docker run -p 5028:5028 petsfran-api
+```
+
+## 🌐 Deploy no Railway
+
+A API está configurada para deploy no Railway com:
+- Dockerfile otimizado
+- Migrações automáticas
+- Variáveis de ambiente para produção
+
+## 📁 Estrutura do Projeto
+
+```
+PetsFran.API/
+├── Controllers/     # Controladores da API
+├── Data/            # Contexto do banco de dados
+├── Middleware/      # Middlewares personalizados
+├── Models/          # Modelos/Entidades
+├── Profiles/        # Perfis do AutoMapper
+├── Properties/      # Configurações do launchSettings.json
+├── Services/        # Lógica de negócios
+├── appsettings.json # Configurações
+└── Program.cs       # Ponto de entrada
+```
+
+## 📝 Licença
+Este projeto é privado e de uso exclusivo da PetsFran.

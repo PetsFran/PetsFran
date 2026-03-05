@@ -4,30 +4,32 @@ WORKDIR /app
 
 # Copiar arquivos de projeto e restaurar dependências
 COPY *.sln .
-COPY PetMind.API/*.csproj ./PetMind.API/
+COPY PetsFran.API/*.csproj ./PetsFran.API/
 RUN dotnet restore
 
-# (OPCIONAL, MAS ÚTIL) Instalar a ferramenta do EF Core localmente na pasta /app/tools
+# Instalar ferramenta do EF Core
 RUN dotnet tool install --tool-path /app/tools dotnet-ef --version 10.0.0
 
 # Copiar todo o código e publicar a aplicação
 COPY . .
-WORKDIR /app/PetMind.API
+WORKDIR /app/PetsFran.API
 RUN dotnet publish -c Release -o /out
 
 # Estágio final (runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Copiar a ferramenta do EF Core do estágio de build para uma pasta conhecida no runtime
+# Copiar ferramentas e aplicação
 COPY --from=build /app/tools /app/tools
-
-# Copiar a aplicação publicada do estágio de build
 COPY --from=build /out .
 
-# Copiar e dar permissão ao script de entrada
+# Copiar script de entrada
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
+
+# Expor portas
+EXPOSE 8080
+EXPOSE 8081
 
 # Comando de entrada
 CMD ["./entrypoint.sh"]

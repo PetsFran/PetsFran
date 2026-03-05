@@ -1,0 +1,24 @@
+## .NET Core
+bin/
+obj/
+*.user
+*.suo
+*.db
+*.log
+*.swp
+*.swo
+*~
+
+## Environment
+appsettings.Development.json
+.env
+*.local
+
+## IDE
+.vs/
+.idea/
+.vscode/
+.DS_Store
+
+## Railway
+railway.json
