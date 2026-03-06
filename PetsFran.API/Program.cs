@@ -217,7 +217,7 @@ builder.Services.AddCors(options =>
             }
             else
             {
-                allowedOrigins.Add("https://pets-fran-agendamento-seven.vercel.app/login");
+                allowedOrigins.Add("pets-fran-agendamento-seven.vercel.app");
             }
             
             policy.WithOrigins(allowedOrigins.ToArray())
