@@ -161,33 +161,76 @@ builder.Services.AddScoped<CalculaPrecosService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
 
-// Configurar CORS
-builder.Services.AddCors(options =>
+// Configurar banco de dados - VERSÃO CORRIGIDA
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy =>
+    string connectionString = null;
+    
+    // 1. Tentar obter da variável de ambiente DATABASE_URL (Railway)
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    
+    if (!string.IsNullOrEmpty(databaseUrl))
+    {
+        try
         {
-            var allowedOrigins = new List<string>();
+            Console.WriteLine($"DATABASE_URL encontrada: {databaseUrl.Substring(0, databaseUrl.IndexOf('@') + 1)}***");
             
-            if (builder.Environment.IsDevelopment())
-            {
-                allowedOrigins.Add("http://localhost:4200");
-            }
-            else
-            {
-                // Adicionar URLs permitidas em produção
-                allowedOrigins.Add("https://petsfranagendamento.vercel.app");
-                
-                // URL NOVA do Railway (vai ser gerada quando criar o projeto)
-                // Deixe comentado e o cliente atualiza depois
-                // allowedOrigins.Add("https://petsfran-api.up.railway.app");
-            }
+            // Formato esperado: postgresql://usuario:senha@host:porta/banco
+            var uri = new Uri(databaseUrl);
+            var userInfo = uri.UserInfo.Split(':');
             
-            policy.WithOrigins(allowedOrigins.ToArray())
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
-        });
+            var username = userInfo[0];
+            var password = userInfo[1];
+            var database = uri.AbsolutePath.TrimStart('/');
+            
+            // Construir connection string no formato correto para Npgsql
+            connectionString = $"Host={uri.Host};" +
+                              $"Port={uri.Port};" +
+                              $"Database={database};" +
+                              $"Username={username};" +
+                              $"Password={password};" +
+                              $"SSL Mode=Require;" +
+                              $"Trust Server Certificate=true;";
+            
+            Console.WriteLine("String de conexão construída com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao processar DATABASE_URL: {ex.Message}");
+            // Fallback: tentar usar diretamente (algumas versões do Npgsql aceitam)
+            connectionString = databaseUrl;
+        }
+    }
+    else
+    {
+        // 2. Fallback para connection string do appsettings.json
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        Console.WriteLine("Usando DefaultConnection do appsettings.json");
+    }
+    
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        throw new InvalidOperationException("Nenhuma string de conexão configurada");
+    }
+    
+    // Log seguro (escondendo a senha)
+    var maskedConnection = connectionString;
+    if (maskedConnection.Contains("Password="))
+    {
+        var parts = maskedConnection.Split(';');
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (parts[i].StartsWith("Password="))
+            {
+                parts[i] = "Password=***";
+                break;
+            }
+        }
+        maskedConnection = string.Join(";", parts);
+    }
+    Console.WriteLine($"Connection string configurada: {maskedConnection}");
+    
+    options.UseNpgsql(connectionString);
 });
 
 var app = builder.Build();
