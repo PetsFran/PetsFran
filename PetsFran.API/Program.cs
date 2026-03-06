@@ -39,37 +39,79 @@ builder.Services.AddOpenApi(options =>
 // Configurar AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-// Configurar banco de dados
+// CONFIGURAÇÃO DO BANCO DE DADOS - VERSÃO ÚNICA E OTIMIZADA
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    string connectionString = null;
 
-    // Se não encontrar ou tiver erro, tenta DATABASE_URL
-    if (string.IsNullOrEmpty(connectionString))
+    // 1. Tentar obter da variável de ambiente DATABASE_URL (Railway)
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+    if (!string.IsNullOrEmpty(databaseUrl))
     {
-        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-        if (!string.IsNullOrEmpty(databaseUrl))
+        try
         {
-            // Converte postgresql://user:pass@host:port/db para formato Npgsql
-            try
-            {
-                var uri = new Uri(databaseUrl);
-                var userInfo = uri.UserInfo.Split(':');
-                connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};" +
-                                   $"Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
-            }
-            catch
-            {
-                // Se falhar, usa a string direta
-                connectionString = databaseUrl;
-            }
+            Console.WriteLine($"DATABASE_URL encontrada: {databaseUrl.Substring(0, databaseUrl.IndexOf('@') + 1)}***");
+
+            // Formato esperado: postgresql://usuario:senha@host:porta/banco
+            var uri = new Uri(databaseUrl);
+            var userInfo = uri.UserInfo.Split(':');
+
+            var username = userInfo[0];
+            var password = userInfo[1];
+            var database = uri.AbsolutePath.TrimStart('/');
+
+            // Construir connection string no formato correto para Npgsql
+            connectionString = $"Host={uri.Host};" +
+                               $"Port={uri.Port};" +
+                               $"Database={database};" +
+                               $"Username={username};" +
+                               $"Password={password};" +
+                               $"SSL Mode=Require;" +
+                               $"Trust Server Certificate=true;";
+
+            Console.WriteLine("String de conexão construída com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao processar DATABASE_URL: {ex.Message}");
+            // Fallback: tentar usar a string do appsettings
+            connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         }
     }
+    else
+    {
+        // 2. Fallback para connection string do appsettings.json
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        Console.WriteLine("Usando DefaultConnection do appsettings.json");
+    }
+
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        throw new InvalidOperationException("Nenhuma string de conexão configurada");
+    }
+
+    // Log seguro (escondendo a senha)
+    var maskedConnection = connectionString;
+    if (maskedConnection.Contains("Password="))
+    {
+        var parts = maskedConnection.Split(';');
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (parts[i].StartsWith("Password="))
+            {
+                parts[i] = "Password=***";
+                break;
+            }
+        }
+        maskedConnection = string.Join(";", parts);
+    }
+    Console.WriteLine($"Connection string configurada: {maskedConnection}");
 
     options.UseNpgsql(connectionString);
 });
 
-// Configurar JWT Authentication (seu código existente)
+// Configurar JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secret = jwtSettings["Secret"]
              ?? throw new InvalidOperationException("JWT Secret não configurado no appsettings.json");
@@ -161,76 +203,28 @@ builder.Services.AddScoped<CalculaPrecosService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
 
-// Configurar banco de dados - VERSÃO CORRIGIDA
-builder.Services.AddDbContext<AppDbContext>(options =>
+// Configurar CORS
+builder.Services.AddCors(options =>
 {
-    string connectionString = null;
-    
-    // 1. Tentar obter da variável de ambiente DATABASE_URL (Railway)
-    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-    
-    if (!string.IsNullOrEmpty(databaseUrl))
-    {
-        try
+    options.AddPolicy("AllowFrontend",
+        policy =>
         {
-            Console.WriteLine($"DATABASE_URL encontrada: {databaseUrl.Substring(0, databaseUrl.IndexOf('@') + 1)}***");
+            var allowedOrigins = new List<string>();
             
-            // Formato esperado: postgresql://usuario:senha@host:porta/banco
-            var uri = new Uri(databaseUrl);
-            var userInfo = uri.UserInfo.Split(':');
-            
-            var username = userInfo[0];
-            var password = userInfo[1];
-            var database = uri.AbsolutePath.TrimStart('/');
-            
-            // Construir connection string no formato correto para Npgsql
-            connectionString = $"Host={uri.Host};" +
-                              $"Port={uri.Port};" +
-                              $"Database={database};" +
-                              $"Username={username};" +
-                              $"Password={password};" +
-                              $"SSL Mode=Require;" +
-                              $"Trust Server Certificate=true;";
-            
-            Console.WriteLine("String de conexão construída com sucesso!");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao processar DATABASE_URL: {ex.Message}");
-            // Fallback: tentar usar diretamente (algumas versões do Npgsql aceitam)
-            connectionString = databaseUrl;
-        }
-    }
-    else
-    {
-        // 2. Fallback para connection string do appsettings.json
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        Console.WriteLine("Usando DefaultConnection do appsettings.json");
-    }
-    
-    if (string.IsNullOrEmpty(connectionString))
-    {
-        throw new InvalidOperationException("Nenhuma string de conexão configurada");
-    }
-    
-    // Log seguro (escondendo a senha)
-    var maskedConnection = connectionString;
-    if (maskedConnection.Contains("Password="))
-    {
-        var parts = maskedConnection.Split(';');
-        for (int i = 0; i < parts.Length; i++)
-        {
-            if (parts[i].StartsWith("Password="))
+            if (builder.Environment.IsDevelopment())
             {
-                parts[i] = "Password=***";
-                break;
+                allowedOrigins.Add("http://localhost:4200");
             }
-        }
-        maskedConnection = string.Join(";", parts);
-    }
-    Console.WriteLine($"Connection string configurada: {maskedConnection}");
-    
-    options.UseNpgsql(connectionString);
+            else
+            {
+                allowedOrigins.Add("https://petsfranagendamento.vercel.app");
+            }
+            
+            policy.WithOrigins(allowedOrigins.ToArray())
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
 });
 
 var app = builder.Build();
@@ -239,8 +233,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
-    // Scalar UI - acessar em /scalar/v1
     app.MapScalarApiReference(options =>
     {
         options
@@ -250,7 +242,6 @@ if (app.Environment.IsDevelopment())
             .WithHttpBearerAuthentication(bearer => { bearer.Token = "seu-token-jwt-aqui"; });
     });
 
-    // Swagger UI alternativo (opcional)
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "PetsFran API V1");
@@ -258,14 +249,15 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// IMPORTANTE: CORS deve vir antes de outros middlewares
 app.UseCors("AllowFrontend");
 
+// Aplicar migrações automaticamente
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     try
     {
-        // Aplica as migrações automaticamente
         await dbContext.Database.MigrateAsync();
         Console.WriteLine("Migrações aplicadas com sucesso!");
     }
