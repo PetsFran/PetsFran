@@ -217,13 +217,20 @@ builder.Services.AddCors(options =>
             }
             else
             {
-                allowedOrigins.Add("pets-fran-agendamento-seven.vercel.app");
+                // URLs permitidas em produção
+                allowedOrigins.Add("https://petsfranagendamento.vercel.app");
+                allowedOrigins.Add("https://petsfranapi-production.up.railway.app");
+                
+                // TODOS OS DOMÍNIOS DO SEU FRONTEND
+                allowedOrigins.Add("https://pets-fran-agendamento-seven.vercel.app");
+                allowedOrigins.Add("https://pets-fran-agendamento-git-main-petsfrans-projects.vercel.app");
+                allowedOrigins.Add("https://pets-fran-agendamento-2mi0wr8iv-petsfrans-projects.vercel.app");
             }
             
             policy.WithOrigins(allowedOrigins.ToArray())
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowCredentials();
+                .AllowCredentials(); 
         });
 });
 
