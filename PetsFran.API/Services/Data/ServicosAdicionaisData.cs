@@ -9,10 +9,9 @@ namespace PetsFran.API.Services.Data
             return new Dictionary<string, Dictionary<string, decimal>>
             {
                 ["Escovação de Dente"] = new Dictionary<string, decimal> { ["P"] = 15, ["M"] = 15, ["G"] = 15 },
-                ["Desembolo"] = new Dictionary<string, decimal> { ["P"] = 15, ["M"] = 25, ["G"] = 60 },
-                ["Hidratação"] = new Dictionary<string, decimal> { ["P"] = 20, ["M"] = 25, ["G"] = 30 },
-                ["Taxi Dog"] = new Dictionary<string, decimal> { ["P"] = 15, ["M"] = 15, ["G"] = 15 },
-                ["Cortar Unha"] = new Dictionary<string, decimal> { ["P"] = 5, ["M"] = 10, ["G"] = 10 }
+                ["Desembolo"] = new Dictionary<string, decimal> { ["P"] = 15, ["M"] = 25, ["G"] = 35 },
+                ["Hidratação"] = new Dictionary<string, decimal> { ["P"] = 20, ["M"] = 20, ["G"] = 20 },
+                ["Cortar Unha"] = new Dictionary<string, decimal> { ["P"] = 10, ["M"] = 10, ["G"] = 10 }
             };
         }
     }

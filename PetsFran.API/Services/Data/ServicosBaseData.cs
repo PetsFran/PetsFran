@@ -18,11 +18,9 @@ public class ServicosBaseData
                 {
                     ["Banho"] = 60.00m,
                     ["Banho e Tosa Higiênica"] = 70.00m,
-                    ["Banho e Tosa Verão"] = 100.00m,
-                    ["Banho e Tosa na Máquina"] = 110.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m,
-                    ["Banho e Triming"] = 170.00m,
-                    ["Banho Carding"] = 170.00m
+                    ["Banho e Tosa Geral"] = 100.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 120.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 140.00m
                 }
             },
             new ServicoBase
@@ -31,12 +29,11 @@ public class ServicosBaseData
                 Raca = "York",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 50.00m,
-                    ["Banho e Tosa Higiênica"] = 60.00m,
-                    ["Banho e Tosa Verão"] = 90.00m,
-                    ["Banho e Tosa na Máquina"] = 100.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m,
-                    ["Banho e Triming"] = 170.00m
+                    ["Banho"] = 60.00m,
+                    ["Banho e Tosa Higiênica"] = 70.00m,
+                    ["Banho e Tosa Geral"] = 100.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 120.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 140.00m
                 }
             },
             new ServicoBase
@@ -45,12 +42,11 @@ public class ServicosBaseData
                 Raca = "Shitzu",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 50.00m,
-                    ["Banho e Tosa Higiênica"] = 60.00m,
-                    ["Banho e Tosa Verão"] = 90.00m,
-                    ["Banho e Tosa na Máquina"] = 100.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m,
-                    ["Banho e Triming"] = 170.00m
+                    ["Banho"] = 60.00m,
+                    ["Banho e Tosa Higiênica"] = 70.00m,
+                    ["Banho e Tosa Geral"] = 100.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 120.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 140.00m
                 }
             },
             new ServicoBase
@@ -59,56 +55,11 @@ public class ServicosBaseData
                 Raca = "Maltês",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 50.00m,
-                    ["Banho e Tosa Higiênica"] = 60.00m,
-                    ["Banho e Tosa Verão"] = 90.00m,
-                    ["Banho e Tosa na Máquina"] = 100.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m,
-                    ["Banho e Triming"] = 170.00m
-                }
-            },
-            new ServicoBase
-            {
-                Porte = "Pequeno",
-                Raca = "Dachshund",
-                Servicos = new Dictionary<string, decimal>
-                {
-                    ["Banho"] = 60.00m,
-                    ["Banho Carding"] = 90.00m
-                }
-            },
-            new ServicoBase
-            {
-                Porte = "Pequeno",
-                Raca = "Pinscher",
-                Servicos = new Dictionary<string, decimal>
-                {
-                    ["Banho"] = 40.00m,
-                    ["Banho Carding"] = 70.00m
-                }
-            },
-            new ServicoBase
-            {
-                Porte = "Pequeno",
-                Raca = "Pug",
-                Servicos = new Dictionary<string, decimal>
-                {
-                    ["Banho"] = 50.00m,
-                    ["Banho e Tosa Verão"] = 90.00m,
-                    ["Banho Carding"] = 90.00m
-                }
-            },
-            new ServicoBase
-            {
-                Porte = "Pequeno",
-                Raca = "Spitz",
-                Servicos = new Dictionary<string, decimal>
-                {
                     ["Banho"] = 60.00m,
                     ["Banho e Tosa Higiênica"] = 70.00m,
-                    ["Banho e Tosa Verão"] = 90.00m,
-                    ["Banho e Tosa na Máquina"] = 100.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m
+                    ["Banho e Tosa Geral"] = 100.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 120.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 140.00m
                 }
             },
             new ServicoBase
@@ -117,12 +68,51 @@ public class ServicosBaseData
                 Raca = "Lhasa",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 50.00m,
-                    ["Banho e Tosa Higiênica"] = 60.00m,
-                    ["Banho e Tosa Verão"] = 90.00m,
-                    ["Banho e Tosa na Máquina"] = 100.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m,
-                    ["Banho e Triming"] = 160.00m
+                    ["Banho"] = 60.00m,
+                    ["Banho e Tosa Higiênica"] = 70.00m,
+                    ["Banho e Tosa Geral"] = 100.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 120.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 140.00m
+                }
+            },
+            new ServicoBase
+            {
+                Porte = "Pequeno",
+                Raca = "Dachshund",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 60.00m
+                }
+            },
+            new ServicoBase
+            {
+                Porte = "Pequeno",
+                Raca = "Pinscher",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 50.00m
+                }
+            },
+            new ServicoBase
+            {
+                Porte = "Pequeno",
+                Raca = "Pug",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 60.00m
+                }
+            },
+            new ServicoBase
+            {
+                Porte = "Pequeno",
+                Raca = "Spitz",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 70.00m,
+                    ["Banho e Tosa Higiênica"] = 80.00m,
+                    ["Banho e Tosa Geral"] = 100.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 120.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 140.00m
                 }
             },
             new ServicoBase
@@ -131,12 +121,11 @@ public class ServicosBaseData
                 Raca = "Poodle",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 50.00m,
-                    ["Banho e Tosa Higiênica"] = 60.00m,
-                    ["Banho e Tosa Verão"] = 90.00m,
-                    ["Banho e Tosa na Máquina"] = 100.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m,
-                    ["Banho e Triming"] = 160.00m
+                    ["Banho"] = 60.00m,
+                    ["Banho e Tosa Higiênica"] = 70.00m,
+                    ["Banho e Tosa Geral"] = 100.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 120.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 140.00m
                 }
             },
 
@@ -147,13 +136,11 @@ public class ServicosBaseData
                 Raca = "Vira lata",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 60.00m,
-                    ["Banho e Tosa Higiênica"] = 70.00m,
-                    ["Banho e Tosa Verão"] = 100.00m,
-                    ["Banho e Tosa na Máquina"] = 110.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m,
-                    ["Banho e Triming"] = 150.00m,
-                    ["Banho Carding"] = 150.00m
+                    ["Banho"] = 70.00m,
+                    ["Banho e Tosa Higiênica"] = 80.00m,
+                    ["Banho e Tosa Geral"] = 120.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 140.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 160.00m
                 }
             },
             new ServicoBase
@@ -162,11 +149,11 @@ public class ServicosBaseData
                 Raca = "Poodle",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 60.00m,
-                    ["Banho e Tosa Higiênica"] = 70.00m,
-                    ["Banho e Tosa Verão"] = 100.00m,
-                    ["Banho e Tosa na Máquina"] = 110.00m,
-                    ["Banho e Tosa na Tesoura"] = 120.00m
+                    ["Banho"] = 70.00m,
+                    ["Banho e Tosa Higiênica"] = 80.00m,
+                    ["Banho e Tosa Geral"] = 120.00m,
+                    ["Banho e Tosa Bebê na Máquina"] = 140.00m,
+                    ["Banho e Tosa Bebê na Tesoura"] = 160.00m
                 }
             },
             new ServicoBase
@@ -175,8 +162,7 @@ public class ServicosBaseData
                 Raca = "Buldog",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 60.00m,
-                    ["Banho Carding"] = 90.00m
+                    ["Banho"] = 70.00m
                 }
             },
             new ServicoBase
@@ -185,9 +171,25 @@ public class ServicosBaseData
                 Raca = "Beagle",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 60.00m,
-                    ["Banho e Tosa Verão"] = 100.00m,
-                    ["Banho Carding"] = 90.00m
+                    ["Banho"] = 70.00m
+                }
+            },
+            new ServicoBase
+            {
+                Porte = "Médio",
+                Raca = "Pitbull",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 70.00m
+                }
+            },
+            new ServicoBase
+            {
+                Porte = "Médio",
+                Raca = "Pitmonster",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 80.00m,
                 }
             },
             new ServicoBase
@@ -198,9 +200,7 @@ public class ServicosBaseData
                 {
                     ["Banho"] = 90.00m,
                     ["Banho e Tosa Higiênica"] = 100.00m,
-                    ["Banho e Tosa Verão"] = 120.00m,
-                    ["Banho e Tosa na Máquina"] = 120.00m,
-                    ["Banho e Tosa na Tesoura"] = 150.00m
+                    ["Banho e Tosa Geral"] = 140.00m
                 }
             },
 
@@ -211,13 +211,9 @@ public class ServicosBaseData
                 Raca = "Vira lata",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 90.00m,
-                    ["Banho e Tosa Higiênica"] = 120.00m,
-                    ["Banho e Tosa Verão"] = 140.00m,
-                    ["Banho e Tosa na Máquina"] = 150.00m,
-                    ["Banho e Tosa na Tesoura"] = 170.00m,
-                    ["Banho e Triming"] = 160.00m,
-                    ["Banho Carding"] = 120.00m
+                    ["Banho"] = 80.00m,
+                    ["Banho e Tosa Higiênica"] = 100.00m,
+                    ["Banho e Tosa Geral"] = 150.00m
                 }
             },
             new ServicoBase
@@ -227,8 +223,8 @@ public class ServicosBaseData
                 Servicos = new Dictionary<string, decimal>
                 {
                     ["Banho"] = 80.00m,
-                    ["Banho e Tosa Higiênica"] = 95.00m,
-                    ["Banho e Triming"] = 140.00m
+                    ["Banho e Tosa Higiênica"] = 100.00m,
+                    ["Banho e Tosa Geral"] = 150.00m
                 }
             },
             new ServicoBase
@@ -237,9 +233,31 @@ public class ServicosBaseData
                 Raca = "Pastor Alemão",
                 Servicos = new Dictionary<string, decimal>
                 {
-                    ["Banho"] = 90.00m,
+                    ["Banho"] = 80.00m,
                     ["Banho e Tosa Higiênica"] = 105.00m,
-                    ["Banho e Triming"] = 150.00m
+                    ["Banho e Tosa Geral"] = 150.00m
+                }
+            },
+            new ServicoBase
+            {
+                Porte = "Grande",
+                Raca = "Dálmata",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 80.00m,
+                    ["Banho e Tosa Higiênica"] = 100.00m,
+                    ["Banho e Tosa Geral"] = 150.00m
+                }
+            },
+            new ServicoBase
+            {
+                Porte = "Grande",
+                Raca = "Rottweiler",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 90.00m,
+                    ["Banho e Tosa Geral"] = 150.00m,
+                    ["Banho e Triming"] = 140.00m
                 }
             },
             new ServicoBase
@@ -250,18 +268,7 @@ public class ServicosBaseData
                 {
                     ["Banho"] = 100.00m,
                     ["Banho e Tosa Higiênica"] = 120.00m,
-                    ["Banho e Triming"] = 160.00m
-                }
-            },
-            new ServicoBase
-            {
-                Porte = "Grande",
-                Raca = "Dálmata",
-                Servicos = new Dictionary<string, decimal>
-                {
-                    ["Banho"] = 80.00m,
-                    ["Banho e Tosa Verão"] = 120.00m,
-                    ["Banho Carding"] = 140.00m
+                    ["Banho e Tosa Geral"] = 150.00m
                 }
             },
             new ServicoBase
@@ -272,6 +279,20 @@ public class ServicosBaseData
                 {
                     ["Banho"] = 100.00m,
                     ["Banho e Tosa Higiênica"] = 120.00m,
+                    ["Banho e Tosa Geral"] = 150.00m,
+                    ["Banho e Triming"] = 160.00m
+                }
+            },
+            
+            new ServicoBase
+            {
+                Porte = "Grande",
+                Raca = "Bernese",
+                Servicos = new Dictionary<string, decimal>
+                {
+                    ["Banho"] = 120.00m,
+                    ["Banho e Tosa Higiênica"] = 130.00m,
+                    ["Banho e Tosa Geral"] = 150.00m,
                     ["Banho e Triming"] = 160.00m
                 }
             },
@@ -283,19 +304,10 @@ public class ServicosBaseData
                 {
                     ["Banho"] = 160.00m,
                     ["Banho e Tosa Higiênica"] = 180.00m,
+                    ["Banho e Tosa Geral"] = 150.00m,
                     ["Banho e Triming"] = 200.00m
                 }
             },
-            new ServicoBase
-            {
-                Porte = "Grande",
-                Raca = "Rottweiler",
-                Servicos = new Dictionary<string, decimal>
-                {
-                    ["Banho"] = 90.00m,
-                    ["Banho Carding"] = 120.00m
-                }
-            }
         };
     }
 }
