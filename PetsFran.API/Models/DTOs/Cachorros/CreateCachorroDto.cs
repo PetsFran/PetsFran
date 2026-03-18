@@ -16,9 +16,6 @@ namespace PetsFran.API.Models.DTOs.Cachorros
         [Phone(ErrorMessage = "Formato de telefone inválido")]
         public string ContatoTutor { get; set; } = string.Empty;
 
-        [StringLength(200, ErrorMessage = "Endereço não pode exceder 200 caracteres")]
-        public string EnderecoCachorro { get; set; } = string.Empty;
-
         [Required(ErrorMessage = "Raça é obrigatória")]
         public string Raca { get; set; } = string.Empty;
 

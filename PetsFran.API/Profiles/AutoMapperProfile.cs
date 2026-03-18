@@ -44,8 +44,7 @@ namespace PetsFran.API.Profiles
             CreateMap<Cachorro, CachorroInfoDto>()
                 .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.NomeCachorro))
                 .ForMember(dest => dest.NomeTutor, opt => opt.MapFrom(src => src.NomeTutor))
-                .ForMember(dest => dest.ContatoTutor, opt => opt.MapFrom(src => src.ContatoTutor))
-                .ForMember(dest => dest.EnderecoCachorro, opt => opt.MapFrom(src => src.EnderecoCachorro));
+                .ForMember(dest => dest.ContatoTutor, opt => opt.MapFrom(src => src.ContatoTutor));
 
             CreateMap<PetShop, PetShopInfoDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
