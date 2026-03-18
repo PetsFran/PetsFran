@@ -35,10 +35,6 @@ namespace PetsFran.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("EnderecoCachorro")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("NomeCachorro")
                         .IsRequired()
                         .HasColumnType("text");
