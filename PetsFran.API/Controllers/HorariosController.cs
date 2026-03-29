@@ -58,7 +58,7 @@ public class HorariosController : ControllerBase
             .Where(h => h.PetShopId == _petShopIdLogado)
             .Include(h => h.Cachorro)
             .Include(h => h.PetShop)
-            .OrderByDescending(h => h.Data)
+            .OrderBy(h => h.Data)
             .ToListAsync();
 
         return Ok(_mapper.Map<List<HorarioResponseDto>>(horarios));

@@ -53,6 +53,8 @@ public class CachorrosController : ControllerBase
     {
         var cachorros = await _context.Cachorros
             .Where(c => c.PetShopId == _petShopIdLogado) // 🔒 FILTRO
+            .OrderBy(c => c.NomeCachorro)      // Primeiro por nome do cachorro
+            .ThenBy(c => c.NomeTutor)          // Depois por nome do tutor
             .ToListAsync();
 
         return Ok(_mapper.Map<List<CachorroResponseDto>>(cachorros));
