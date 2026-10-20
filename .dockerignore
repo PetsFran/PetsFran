@@ -1,0 +1,15 @@
+.git
+.idea
+.vscode
+.DS_Store
+.env
+**/.env*
+**/appsettings.Development.json
+**/bin
+**/obj
+frontend
+output
+*.md
+*.pdf
+*.suo
+*.user

@@ -35,7 +35,7 @@ public class AuthService : IAuthService
         var petShop = await _context.PetShops
             .FirstOrDefaultAsync(p => p.Email == email);
 
-        if (petShop == null || !BCrypt.Net.BCrypt.Verify(senha, petShop.Senha))
+        if (petShop == null || !PasswordHashVerifier.Verify(senha, petShop.Senha))
             return null;
 
         var accessToken = GenerateAccessToken(petShop);
@@ -68,7 +68,7 @@ public class AuthService : IAuthService
             .ToListAsync();
 
         var petShop = petShops.FirstOrDefault(p =>
-            BCrypt.Net.BCrypt.Verify(refreshToken, p.RefreshTokenHash!)
+            PasswordHashVerifier.Verify(refreshToken, p.RefreshTokenHash)
         );
 
         if (petShop == null)
@@ -101,7 +101,7 @@ public class AuthService : IAuthService
             .ToListAsync();
 
         var petShop = petShops.FirstOrDefault(p =>
-            BCrypt.Net.BCrypt.Verify(refreshToken, p.RefreshTokenHash!)
+            PasswordHashVerifier.Verify(refreshToken, p.RefreshTokenHash)
         );
 
         if (petShop == null)

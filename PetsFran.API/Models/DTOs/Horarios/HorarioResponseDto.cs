@@ -24,7 +24,6 @@ namespace PetsFran.API.Models.DTOs.Horarios
         public string Porte { get; set; } = string.Empty;
         public string NomeTutor { get; set; } = string.Empty;
         public string ContatoTutor { get; set; } = string.Empty;
-        public string EnderecoCachorro { get; set; } = string.Empty; // ← ADICIONAR!
     }
 
     public class PetShopInfoDto

@@ -1,0 +1,11 @@
+h2 { margin: 0 0 20px; padding-bottom: 12px; border-bottom: 1px solid var(--line); color: var(--pink-dark); font-size: 1.45rem; font-weight: 800; }
+p { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; color: var(--text); line-height: 1.45; }
+strong { color: var(--pink-dark); font-weight: 800; }
+a { color: var(--pink-dark); text-underline-offset: 3px; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 22px 0; }
+.buttons { display: flex; gap: 9px; margin-top: 22px; }
+button { flex: 1; min-height: 43px; padding: 8px 14px; border: 1px solid var(--pink); border-radius: 10px; background: var(--pink); color: white; font-weight: 800; cursor: pointer; }
+button:hover { background: var(--pink-dark); }
+.warnButton { background: #9f4a63; border-color: #9f4a63; }
+.warnButton:hover { background: #86384f; }
+.empty-details { margin: 0; padding: 16px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: .9rem; }

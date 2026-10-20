@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:17-alpine
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-55433}:5432"
+    environment:
+      POSTGRES_DB: petsfran
+      POSTGRES_USER: petsfran
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-petsfran_local}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U petsfran -d petsfran"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=petsfran;Username=petsfran;Password=${POSTGRES_PASSWORD:-petsfran_local}
+      JwtSettings__Secret: ${JWT_SECRET:-local-development-signing-key-at-least-32-bytes}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:5028:8080"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - api
+    ports:
+      - "127.0.0.1:4200:80"
+
+volumes:
+  postgres_data:

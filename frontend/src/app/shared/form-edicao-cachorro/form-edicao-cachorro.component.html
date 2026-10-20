@@ -1,0 +1,69 @@
+<form (ngSubmit)="salvarEdicao()" #form="ngForm" class="form-cadastro">
+  <div class="dialog-heading">
+    <h2>Editar pet</h2>
+    <button type="button" class="dialog-close" mat-dialog-close aria-label="Fechar">×</button>
+  </div>
+
+  <div class="form-fields">
+
+  <input
+    class="inputCachorroContainer"
+    [(ngModel)]="cachorroEditado.nomeCachorro"
+    name="nomeCachorro"
+    placeholder="Nome do Cachorro"
+    aria-label="Nome do pet"
+    required
+  />
+
+  <input
+    class="inputCachorroContainer"
+    [(ngModel)]="cachorroEditado.nomeTutor"
+    name="nomeTutor"
+    placeholder="Nome do Tutor"
+    aria-label="Nome do tutor"
+    required
+  />
+
+  <input
+    class="inputCachorroContainer"
+    [(ngModel)]="cachorroEditado.contatoTutor"
+    name="contatoTutor"
+    placeholder="Contato"
+    aria-label="Contato do tutor"
+    required
+  />
+
+  <select
+    class="inputCachorroContainer"
+    [(ngModel)]="cachorroEditado.porte"
+    name="porte"
+    aria-label="Porte do pet"
+    required
+    (change)="atualizarRacas()"
+  >
+    <option value="" disabled selected>Selecione o porte</option>
+    <option value="Pequeno">Pequeno</option>
+    <option value="Médio">Médio</option>
+    <option value="Grande">Grande</option>
+  </select>
+
+  <select
+    class="inputCachorroContainer"
+    [(ngModel)]="cachorroEditado.raca"
+    name="raca"
+    aria-label="Raça do pet"
+    required
+  >
+    <option value="" disabled selected>Selecione a raça</option>
+    <option *ngFor="let raca of racasDisponiveis" [value]="raca">
+      {{ raca }}
+    </option>
+  </select>
+
+  </div>
+
+  <div class="buttons">
+    <button type="submit" [disabled]="form.invalid">Salvar alterações</button>
+    <button type="button" class="warnButton" (click)="excluirCachorro()">Excluir</button>
+  </div>
+</form>

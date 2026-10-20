@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PetsFran.API.Middleware;
 using PetsFran.API.Services.Auth;
+using PetsFran.API.CrossCutting.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -203,6 +204,9 @@ builder.Services.AddScoped<CalculaPrecosService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
 
+// ✨ NOVO: Registrar serviços da Clean Architecture
+builder.Services.AddCleanArchitectureServices();
+
 // Configurar CORS
 builder.Services.AddCors(options =>
 {
@@ -271,7 +275,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         Console.WriteLine($"Erro ao aplicar migrações: {ex.Message}");
-        // Não falha a aplicação se as migrações não funcionarem
+        if (app.Environment.IsDevelopment()) throw;
     }
 }
 

@@ -37,13 +37,17 @@ namespace PetsFran.API.Services
 
         public decimal GetPrecoAdicionalPorCachorro(Cachorro pet, List<string> adicionais)
         {
+            var adicionalInvalido = adicionais.FirstOrDefault(nome => !_adicionais.ContainsKey(nome));
+            if (adicionalInvalido != null)
+                throw new ArgumentException($"Serviço adicional não disponível: {adicionalInvalido}");
+
             var porteKey = (pet.Porte?.Trim() ?? "").ToUpper() switch
             {
                 "PEQUENO" => "P",
                 "MÉDIO" => "M",
                 "MEDIO" => "M",
                 "GRANDE" => "G",
-                _ => "M"
+                _ => throw new ArgumentException("Porte do pet não disponível na tabela de preços")
             };
 
             return adicionais.Sum(nome => 

@@ -1,0 +1,56 @@
+<div class="lista-container">
+  <div class="dialog-heading">
+    <h2>Pets cadastrados</h2>
+    <button type="button" class="dialog-close" mat-dialog-close aria-label="Fechar">×</button>
+  </div>
+
+  <div class="filtros">
+    <mat-form-field appearance="outline">
+      <mat-label>Buscar por nome, tutor ou contato</mat-label>
+      <input
+        matInput
+        (keyup)="aplicarFiltro($event)"
+        placeholder="Digite para filtrar"
+      />
+    </mat-form-field>
+
+    <button mat-button (click)="limparFiltro()">Limpar filtro</button>
+  </div>
+
+  <ng-container *ngIf="cachorrosFiltrados.length > 0; else semResultados">
+    <div class="cachorros-flex">
+      <div 
+        *ngFor="let cachorro of cachorrosFiltrados" 
+        class="cachorro-card"
+      >
+        <h3>{{ cachorro.nomeCachorro }}</h3>
+        
+        <div class="info">
+          <p><strong>Tutor:</strong> {{ cachorro.nomeTutor }}</p>
+          <p><strong>Raça:</strong> {{ cachorro.raca }}</p>
+          <p><strong>Porte:</strong> {{ cachorro.porte }}</p>
+          
+          <p>
+            <strong>Contato: </strong>
+            <a [href]="getWhatsappLink(cachorro.contatoTutor)" target="_blank" rel="noopener" class="link-contato">
+              {{ cachorro.contatoTutor }}
+            </a>
+          </p>
+          
+        </div>
+        
+        <div class="card-footer">
+          <button type="button" class="editar-hint" (click)="editarCachorro(cachorro)">Editar</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #semResultados>
+    <div class="sem-resultados">
+      <p *ngIf="filtroAtivo">Nenhum cachorro encontrado para "{{ filtroTexto }}"</p>
+      <p *ngIf="!filtroAtivo">Nenhum cachorro cadastrado ainda.</p>
+      <button class="botao-cadastrar" (click)="abrirCadastro()">Cadastrar Cachorro</button>
+    </div>
+  </ng-template>
+</div>

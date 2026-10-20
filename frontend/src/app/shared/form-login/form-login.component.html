@@ -1,0 +1,40 @@
+<form (ngSubmit)="salvar()" #form="ngForm" class="form-login">
+  <div class="dialog-heading">
+    <h2>Login</h2>
+    <button type="button" class="dialog-close" mat-dialog-close aria-label="Fechar">×</button>
+  </div>
+
+  <input
+    class="inputLoginContainer"
+    [(ngModel)]="credenciais.email"
+    name="email"
+    type="email"
+    placeholder="Email"
+    aria-label="Email"
+    autocomplete="email"
+    required
+    email
+    #email="ngModel"
+  />
+
+  <input
+    class="inputLoginContainer"
+    [(ngModel)]="credenciais.senha"
+    name="senha"
+    type="password"
+    placeholder="Senha"
+    aria-label="Senha"
+    autocomplete="current-password"
+    required
+    minlength="6"
+    #senha="ngModel"
+  />
+
+  <div *ngIf="erro" class="erro-mensagem">
+    {{ erro }}
+  </div>
+
+  <button type="submit" [disabled]="form.invalid || loading" class="submit-button">
+    {{ loading ? "Entrando..." : (form.invalid ? "Preencha todos os campos" : "Entrar") }}
+  </button>
+</form>

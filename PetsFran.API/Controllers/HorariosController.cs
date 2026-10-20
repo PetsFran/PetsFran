@@ -139,6 +139,10 @@ public class HorariosController : ControllerBase
                 );
             }
 
+            var adicionaisPermitidos = _calculaPrecosService.GetServicosAdicionais();
+            if ((dto.Adicionais ?? new List<string>()).Any(a => !adicionaisPermitidos.Contains(a)))
+                return BadRequest("Há um serviço adicional indisponível na tabela de preços");
+
             var horario = new Horario
             {
                 CachorroId = dto.CachorroId,
@@ -222,6 +226,10 @@ public class HorariosController : ControllerBase
 
             horario.ServicoBaseSelecionado = dto.ServicoBaseSelecionado;
         }
+
+        if (dto.Adicionais != null && dto.Adicionais.Any(a =>
+                !_calculaPrecosService.GetServicosAdicionais().Contains(a)))
+            return BadRequest("Há um serviço adicional indisponível na tabela de preços");
 
         if (dto.Adicionais != null)
             horario.Adicionais = dto.Adicionais;

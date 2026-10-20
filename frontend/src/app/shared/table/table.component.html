@@ -1,0 +1,77 @@
+<div class="filtros">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar por pet ou tutor</mat-label>
+    <input
+      matInput
+      (keyup)="aplicarFiltroTexto($event)"
+      placeholder="Digite para filtrar"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Filtrar por data</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      (dateChange)="filtrarPorData($event)"
+      placeholder="Escolha uma data"
+      [value]="filtroDataSelecionada"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <button mat-button (click)="limparFiltros()">Limpar filtros</button>
+</div>
+
+<ng-container *ngIf="dataSource.filteredData.length > 0; else semResultados">
+  <mat-table
+    [dataSource]="dataSource"
+    class="mat-elevation-z2"
+    style="width: 100%"
+  >
+    <ng-container matColumnDef="cachorro">
+      <mat-header-cell *matHeaderCellDef> Cachorro </mat-header-cell>
+      <mat-cell *matCellDef="let h" data-label="Cachorro">
+        {{ h.cachorro?.nome }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="tutor">
+      <mat-header-cell *matHeaderCellDef> Tutor </mat-header-cell>
+      <mat-cell *matCellDef="let h" data-label="Tutor">
+        {{ h.cachorro?.nomeTutor }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="data">
+      <mat-header-cell *matHeaderCellDef> Data/Horário </mat-header-cell>
+      <mat-cell *matCellDef="let h" data-label="Data/Horário">
+        {{ h.data.split(" ")[0] }} {{ h.data.split(" ")[1]?.substring(0, 5) }}
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="selecionarHorario(row)"
+      (keydown.enter)="selecionarHorario(row)"
+      (keydown.space)="selecionarHorario(row); $event.preventDefault()"
+      [attr.aria-label]="'Ver detalhes do horário de ' + (row.cachorro?.nome || 'cachorro')"
+      tabindex="0"
+    ></mat-row>
+  </mat-table>
+
+  <mat-paginator
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 15, 20]"
+    showFirstLastButtons
+  >
+  </mat-paginator>
+</ng-container>
+
+<ng-template #semResultados>
+  <div style="text-align: center; margin-top: 2rem; color: #888">
+    <p>Nenhum horário encontrado.</p>
+  </div>
+</ng-template>

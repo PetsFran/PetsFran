@@ -44,8 +44,18 @@ public class ServicosController : ControllerBase
             Adicionais = request.Adicionais ?? new List<string>()
         };
     
-        var preco = _calculaPrecosService.GetPrecoTotalHorario(horarioTemp);
-        return Ok(preco);
+        if (!_calculaPrecosService.GetServicosPorRacaPorte(request.Raca, request.Porte)
+                .Contains(request.ServicoBase))
+            return BadRequest("Serviço base não disponível para a raça e porte informados");
+
+        try
+        {
+            return Ok(_calculaPrecosService.GetPrecoTotalHorario(horarioTemp));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     public class CalculoPrecoRequest
