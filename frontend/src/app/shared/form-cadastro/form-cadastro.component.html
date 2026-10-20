@@ -1,0 +1,165 @@
+<form (ngSubmit)="salvar()" #form="ngForm" class="form-cadastro">
+  <div class="dialog-heading">
+    <h2>{{ tipo === "cachorro" ? "Cadastrar pet" : "Novo agendamento" }}</h2>
+    <button type="button" class="dialog-close" mat-dialog-close aria-label="Fechar">×</button>
+  </div>
+
+  <div class="form-fields">
+
+  <ng-container *ngIf="tipo === 'cachorro'">
+    <input
+      class="inputCachorroContainer"
+      [(ngModel)]="novoCachorro.nomeCachorro"
+      name="nomeCachorro"
+      placeholder="Nome do pet"
+      aria-label="Nome do pet"
+      required
+    />
+    <input
+      class="inputCachorroContainer"
+      [(ngModel)]="novoCachorro.nomeTutor"
+      name="nomeTutor"
+      placeholder="Nome do tutor"
+      aria-label="Nome do tutor"
+      required
+    />
+    <input
+      class="inputCachorroContainer"
+      [(ngModel)]="novoCachorro.contatoTutor"
+      name="contatoTutor"
+      placeholder="Contato do tutor"
+      aria-label="Contato do tutor"
+      required
+    />
+
+    <select
+      class="inputCachorroContainer"
+      [(ngModel)]="novoCachorro.porte"
+      name="porte"
+      aria-label="Porte do pet"
+      required
+      (change)="atualizarRacas()"
+    >
+      <option value="" disabled selected>Selecione o porte</option>
+      <option value="Pequeno">Pequeno</option>
+      <option value="Médio">Médio</option>
+      <option value="Grande">Grande</option>
+    </select>
+
+    <select
+      class="inputCachorroContainer"
+      [(ngModel)]="novoCachorro.raca"
+      name="raca"
+      aria-label="Raça do pet"
+      required
+    >
+      <option value="" disabled selected>Selecione a raça</option>
+      <option *ngFor="let raca of racasDisponiveis" [value]="raca">
+        {{ raca }}
+      </option>
+    </select>
+  </ng-container>
+
+  <ng-container *ngIf="tipo === 'horario'">
+    <mat-form-field appearance="outline" class="custom-input">
+      <mat-label>Selecionar Cachorro</mat-label>
+      <input
+        matInput
+        [(ngModel)]="cachorroSelecionado"
+        [matAutocomplete]="auto"
+        name="cachorroSelecionado"
+        (input)="filtrarCachorros()"
+        required
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selecionarCachorro($event.option.value)"
+      >
+        <mat-option
+          *ngFor="let c of cachorrosFiltrados"
+          [value]="c.nomeCachorro"
+        >
+          {{ c.nomeCachorro }} - {{ c.nomeTutor }} ({{ c.raca }})
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <div *ngIf="cachorroSelecionadoObj" class="ficha-cachorro">
+      <h4>🐾 Ficha do Pet Selecionado</h4>
+      <div class="ficha-content">
+        <p><strong>Nome:</strong> {{ cachorroSelecionadoObj.nomeCachorro }}</p>
+        <p><strong>Tutor:</strong> {{ cachorroSelecionadoObj.nomeTutor }}</p>
+        <p><strong>Porte:</strong> {{ cachorroSelecionadoObj.porte }}</p>
+        <p><strong>Raça:</strong> {{ cachorroSelecionadoObj.raca }}</p>
+        <p><strong>Contato:</strong> {{ cachorroSelecionadoObj.contatoTutor }}</p>
+      </div>
+    </div>
+
+    <label for="cadastro-data" class="field-label">Data</label>
+    <input
+      id="cadastro-data"
+      class="inputData"
+      type="date"
+      [(ngModel)]="novoHorario.data"
+      name="data"
+      required
+    />
+    <label for="cadastro-horario" class="field-label">Horário</label>
+    <input
+      id="cadastro-horario"
+      class="inputData"
+      type="time"
+      [(ngModel)]="novoHorario.horario"
+      name="horario"
+      required
+    />
+
+    <div class="servicos-section">
+      <label>Serviço base</label>
+      <label class="service-option" *ngFor="let servico of servicosBaseDisponiveis">
+        <input
+          type="radio"
+          [value]="servico"
+          name="servicoBase"
+          [(ngModel)]="novoHorario.servicosBaseSelecionado"
+          (change)="calcularValor()"
+          required
+        />
+        {{ servico }}
+      </label>
+    </div>
+
+    <div class="servicos-section">
+      <label>Serviços adicionais</label>
+      <label class="service-option" *ngFor="let adicional of servicosAdicionaisDisponiveis">
+        <input
+          type="checkbox"
+          [value]="adicional"
+          name="adicionais"
+          (change)="
+            novoHorario.adicionais.includes(adicional)
+              ? novoHorario.adicionais.splice(
+                  novoHorario.adicionais.indexOf(adicional),
+                  1
+                )
+              : novoHorario.adicionais.push(adicional);
+            calcularValor()
+          "
+        />
+        {{ adicional }}
+      </label>
+    </div>
+
+    <div class="valor-resumo" aria-live="polite">
+      <span>Valor total do agendamento</span>
+      <strong *ngIf="!calculandoValor && !erroValor">{{ novoHorario.valorTotal | currency:'BRL' }}</strong>
+      <strong *ngIf="calculandoValor">Calculando…</strong>
+      <strong *ngIf="erroValor">Valor indisponível</strong>
+    </div>
+  </ng-container>
+  </div>
+
+  <button type="submit" [disabled]="form.invalid || (tipo === 'horario' && (!novoHorario.servicosBaseSelecionado || calculandoValor || erroValor))" class="submit-button">
+    {{ form.invalid ? "Preencha todos os campos" : "Salvar" }}
+  </button>
+</form>

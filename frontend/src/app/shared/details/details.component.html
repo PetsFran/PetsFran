@@ -1,0 +1,40 @@
+<h2>Detalhes do Horário</h2>
+<p class="empty-details" *ngIf="!horario">Selecione um horário na agenda para ver os detalhes.</p>
+<div *ngIf="horario">
+  <p><strong>Pet:</strong> {{ horario.cachorro?.nome }}</p>
+  <p><strong>Tutor:</strong> {{ horario.cachorro?.nomeTutor }}</p>
+  <p><strong>Raça:</strong> {{ horario.cachorro?.raca }}</p>
+
+  <p>
+    <strong>Contato:</strong>
+    <a [href]="whatsappLink" target="_blank" rel="noopener">
+      {{ horario.cachorro?.contatoTutor }}
+    </a>
+  </p>
+
+  <p>
+    <strong>Data:</strong> {{ horario.data.split(" ")[0] }}
+    {{ horario.data.split(" ")[1]?.substring(0, 5) }}
+  </p>
+
+  <p>
+    <strong>Serviços:</strong>
+    {{ horario.servicoBaseSelecionado }}
+    <span *ngIf="horario.adicionais?.length">
+      - {{ horario.adicionais.join(", ") }}
+    </span>
+  </p>
+  <hr />
+  <p><strong>Valor total:</strong> R$ {{ horario.valorTotal.toFixed(2) }}</p>
+
+  <div class="buttons">
+    <button *ngIf="!mostrarConcluidos" (click)="editarHorario()">Editar</button>
+    <button
+      *ngIf="!mostrarConcluidos"
+      class="warnButton"
+      (click)="concluirHorario()"
+    >
+      Concluir
+    </button>
+  </div>
+</div>

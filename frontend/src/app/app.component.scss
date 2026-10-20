@@ -1,0 +1,22 @@
+:host { display: block; min-height: 100vh; }
+header, .main-container { width: min(calc(100% - 32px), 1380px); margin-inline: auto; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 16px; padding: 16px 22px; border-bottom: 3px solid var(--pink); border-radius: 12px 12px 0 0; background: #fff; }
+header h1 { margin: 0; color: var(--pink-dark); font-size: 1.8rem; font-weight: 800; letter-spacing: -.03em; white-space: nowrap; }
+nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
+nav button { min-height: 42px; padding: 7px 14px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--pink-dark); font-weight: 700; cursor: pointer; }
+nav button:hover { background: var(--pink-light); }
+nav button:first-child { background: var(--pink); color: white; }
+nav button:first-child:hover { background: var(--pink-dark); }
+nav button:last-child { color: var(--muted); }
+.main-container { display: flex; align-items: stretch; gap: 0; margin-top: 18px; }
+.pane { min-width: 0; padding: 22px; border: 1px solid var(--line); background: var(--surface); }
+.left-pane { width: 58%; border-radius: 12px 0 0 12px; }
+.right-pane { width: 42%; border-radius: 0 12px 12px 0; }
+.resizer { width: 5px; flex: 0 0 5px; background: #f3ceda; cursor: col-resize; }
+.resizer:hover, .resizer.resizing { background: var(--pink); }
+.nao-logado-mensagem { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 55vh; text-align: center; color: var(--pink-dark); }
+.nao-logado-mensagem h2 { margin: 0 0 5px; font-size: 1.75rem; font-weight: 800; }
+.nao-logado-mensagem p { margin: 0; color: var(--muted); font-size: 1rem; }
+@media (max-width: 1160px) { .main-container { flex-direction: column; gap: 14px; } .left-pane, .right-pane { width: 100% !important; border-radius: 12px; } .resizer { display: none; } }
+@media (max-width: 700px) { header { display: block; padding: 13px 15px 16px; } header h1 { text-align: center; margin-bottom: 9px; } nav { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; } nav button { min-width: 0; padding: 8px; line-height: 1.2; } .pane { padding: 16px; } }
+@media (max-width: 420px) { header, .main-container { width: calc(100% - 20px); } }

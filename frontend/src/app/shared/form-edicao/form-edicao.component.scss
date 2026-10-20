@@ -1,0 +1,11 @@
+.form-cadastro { display: flex; flex-direction: column; gap: 12px; min-width: min(400px, 80vw); max-height: 80vh; overflow-y: auto; padding: 23px; background: var(--surface); }
+h2 { margin: 0 0 5px; color: var(--pink-dark); font-size: 1.5rem; font-weight: 800; }
+input.inputData { width: 100%; min-height: 45px; padding: 8px 12px; border: 1px solid #e4bfcf; border-radius: 9px; background: white; color: var(--text); }
+.ficha-cachorro, .servicos-section, .valor-total { padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: #fff8fa; }
+.ficha-cachorro h4 { margin: 0 0 6px; color: var(--pink-dark); }.ficha-cachorro p { margin: 4px 0; font-size: .87rem; }
+.servicos-section > label { display: block; margin-bottom: 7px; color: var(--pink-dark); font-weight: 800; }.servicos-section > div { display: flex; align-items: center; gap: 7px; min-height: 30px; }
+.servicos-section input { accent-color: var(--pink-dark); }.valor-total { background: #fff0f4; color: var(--pink-dark); }
+.buttons { display: flex; gap: 8px; }.buttons button { flex: 1; }
+button { min-height: 44px; padding: 8px 13px; border: 0; border-radius: 9px; background: var(--pink); color: white; font-weight: 800; cursor: pointer; }
+button:hover { background: var(--pink-dark); }.warnButton { background: #a44964; }
+@media (max-width: 500px) { .form-cadastro { min-width: 0; padding: 18px; } }

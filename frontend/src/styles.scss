@@ -1,0 +1,18 @@
+:root {
+  --pink: #d45d83;
+  --pink-dark: #a3385e;
+  --pink-light: #ffe0e9;
+  --background: #fff5f7;
+  --surface: #fffdfd;
+  --text: #593546;
+  --muted: #806571;
+  --line: #f0d2dc;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--background); color: var(--text); font-family: 'Baloo 2', sans-serif; }
+button, input, select { font: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--pink-dark); outline-offset: 2px; }
+a { color: var(--pink-dark); }
+.cdk-overlay-dark-backdrop { background: rgba(72, 33, 51, .42); }
+.mat-mdc-dialog-surface { border-radius: 18px !important; background: var(--surface) !important; }
+.mat-mdc-form-field { --mdc-outlined-text-field-outline-color: #e4bfcf; --mdc-outlined-text-field-hover-outline-color: var(--pink); --mdc-outlined-text-field-focus-outline-color: var(--pink-dark); }

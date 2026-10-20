@@ -1,0 +1,13 @@
+.lista-container { width: 100%; max-width: 760px; max-height: 80vh; box-sizing: border-box; overflow-y: auto; padding: 24px; background: var(--surface); }
+h2 { margin: 0 0 16px; color: var(--pink-dark); font-size: 1.55rem; font-weight: 800; }
+.filtros { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+.filtros mat-form-field { flex: 1 1 230px; min-width: 0; }.filtros button { min-height: 43px; padding: 0 13px; border: 1px solid var(--line); border-radius: 9px; background: #fff4f7; color: var(--pink-dark); font-weight: 800; cursor: pointer; }
+.cachorros-flex { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 250px)); gap: 12px; }
+.cachorro-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 13px; background: #fff9fb; }
+.cachorro-card h3 { margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); color: var(--pink-dark); font-size: 1.18rem; font-weight: 800; }
+.info p { margin: 6px 0; color: var(--text); font-size: .86rem; overflow-wrap: anywhere; }.info strong { color: var(--pink-dark); }
+.card-footer { margin-top: 10px; text-align: right; }.editar-hint { display: inline-block; min-height: 35px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--pink-dark); font-size: .84rem; font-weight: 800; cursor: pointer; }.editar-hint:hover { background: #fff0f5; }
+.dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }.dialog-heading h2 { margin: 0; }.dialog-close { flex: none; width: 36px; height: 36px; border: 0; border-radius: 8px; background: #fff0f5; color: var(--pink-dark); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.sem-resultados { padding: 35px 15px; border: 1px dashed var(--line); border-radius: 11px; text-align: center; color: var(--muted); }
+.botao-cadastrar { min-height: 42px; padding: 8px 15px; border: 0; border-radius: 9px; background: var(--pink); color: white; font-weight: 800; cursor: pointer; }
+@media (max-width: 600px) { .lista-container { padding: 18px; }.filtros button { width: 100%; }.cachorros-flex { grid-template-columns: minmax(0, 1fr); } }

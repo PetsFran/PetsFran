@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using PetsFran.API.Data;
 using PetsFran.API.Models.DTOs.PetShops;
 using PetsFran.API.Models.Entities;
+using PetsFran.API.Services.Auth;
 
 namespace PetsFran.API.Controllers;
 
@@ -98,7 +99,7 @@ public class PetShopsController : ControllerBase
         if (petShop == null) return NotFound();
 
         // VALIDAÇÃO DA SENHA ATUAL (SEMPRE obrigatória!)
-        bool senhaAtualValida = BCrypt.Net.BCrypt.Verify(dto.SenhaAtual, petShop.Senha);
+        bool senhaAtualValida = PasswordHashVerifier.Verify(dto.SenhaAtual, petShop.Senha);
         if (!senhaAtualValida)
             return BadRequest(new { Message = "Senha atual incorreta" });
 

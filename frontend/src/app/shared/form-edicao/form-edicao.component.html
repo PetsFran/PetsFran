@@ -1,0 +1,64 @@
+<form (ngSubmit)="salvarEdicao()" #form="ngForm" class="form-cadastro">
+  <h2>Editar Horário</h2>
+
+  <div class="ficha-cachorro" *ngIf="horarioEditado.cachorro">
+    <h4>🐾 Ficha do Pet</h4>
+    <p><strong>Nome:</strong> {{ horarioEditado.cachorro.nome }}</p>
+    <p><strong>Tutor:</strong> {{ horarioEditado.cachorro.nomeTutor }}</p>
+    <p><strong>Porte:</strong> {{ horarioEditado.cachorro.porte }}</p>
+    <p><strong>Raça:</strong> {{ horarioEditado.cachorro.raca }}</p>
+    <p><strong>Contato:</strong> {{ horarioEditado.cachorro.contatoTutor }}</p>
+  </div>
+
+  <input
+    type="date"
+    class="inputData"
+    [(ngModel)]="horarioEditado.data"
+    name="data"
+    required
+  />
+
+  <input
+    type="time"
+    class="inputData"
+    [(ngModel)]="horarioEditado.horario"
+    name="horario"
+    required
+  />
+
+  <div class="servicos-section">
+    <label>Serviço Base</label>
+    <div *ngFor="let servico of servicosBaseDisponiveis" class="radio-option">
+      <input
+        type="radio"
+        [value]="servico"
+        name="servicoBase"
+        [(ngModel)]="horarioEditado.servicoBaseSelecionado"
+        required
+      />
+      <label>{{ servico }}</label>
+    </div>
+  </div>
+
+  <div class="servicos-section">
+    <label>Serviços Adicionais</label>
+    <div *ngFor="let adicional of servicosAdicionaisDisponiveis" class="checkbox-option">
+      <input
+        type="checkbox"
+        [value]="adicional"
+        [checked]="horarioEditado.adicionais.includes(adicional)"
+        (change)="toggleServicoAdicional(adicional)"
+      />
+      <label>{{ adicional }}</label>
+    </div>
+  </div>
+
+  <div class="valor-total">
+    <strong>Valor Total: R$ {{ horarioEditado.valorTotal?.toFixed(2) || '0.00' }}</strong>
+  </div>
+
+  <div class="buttons">
+    <button type="submit" [disabled]="form.invalid">Salvar Alterações</button>
+    <button type="button" class="warnButton" (click)="excluirHorario()">Excluir</button>
+  </div>
+</form>
