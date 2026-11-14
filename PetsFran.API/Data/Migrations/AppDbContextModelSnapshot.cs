@@ -129,6 +129,49 @@ namespace PetsFran.API.Migrations
                     b.ToTable("PetShops");
                 });
 
+            modelBuilder.Entity("PetsFran.API.Models.Entities.PrecoServico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<int>("PetShopId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Porte")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("Raca")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<decimal>("Valor")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PetShopId", "Tipo", "Porte", "Raca", "Nome")
+                        .IsUnique();
+
+                    b.ToTable("PrecosServicos");
+                });
+
             modelBuilder.Entity("PetsFran.API.Models.Entities.Cachorro", b =>
                 {
                     b.HasOne("PetsFran.API.Models.Entities.PetShop", "PetShop")
@@ -155,6 +198,17 @@ namespace PetsFran.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Cachorro");
+
+                    b.Navigation("PetShop");
+                });
+
+            modelBuilder.Entity("PetsFran.API.Models.Entities.PrecoServico", b =>
+                {
+                    b.HasOne("PetsFran.API.Models.Entities.PetShop", "PetShop")
+                        .WithMany()
+                        .HasForeignKey("PetShopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("PetShop");
                 });

@@ -7,6 +7,7 @@ import { Horario } from './core/models/horario.model';
 import { TableComponent } from './shared/table/table.component';
 import { AuthService } from './core/services/auth.service';
 import { ListaCachorrosComponent } from './shared/lista-cachorros/lista-cachorros.component';
+import { GerenciarPrecosComponent } from './shared/gerenciar-precos/gerenciar-precos.component';
 
 @Component({
   selector: 'app-root',
@@ -42,6 +43,14 @@ export class AppComponent {
       panelClass: 'custom-dialog',
       width: '800px',
       maxWidth: '95vw'
+    });
+  }
+
+  abrirGerenciarPrecos() {
+    this.dialog.open(GerenciarPrecosComponent, {
+      panelClass: 'custom-dialog',
+      width: '900px',
+      maxWidth: '96vw'
     });
   }
 

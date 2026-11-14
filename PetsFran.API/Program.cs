@@ -43,72 +43,9 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 // CONFIGURAÇÃO DO BANCO DE DADOS - VERSÃO ÚNICA E OTIMIZADA
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    string connectionString = null;
-
-    // 1. Tentar obter da variável de ambiente DATABASE_URL (Railway)
-    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-
-    if (!string.IsNullOrEmpty(databaseUrl))
-    {
-        try
-        {
-            Console.WriteLine($"DATABASE_URL encontrada: {databaseUrl.Substring(0, databaseUrl.IndexOf('@') + 1)}***");
-
-            // Formato esperado: postgresql://usuario:senha@host:porta/banco
-            var uri = new Uri(databaseUrl);
-            var userInfo = uri.UserInfo.Split(':');
-
-            var username = userInfo[0];
-            var password = userInfo[1];
-            var database = uri.AbsolutePath.TrimStart('/');
-
-            // Construir connection string no formato correto para Npgsql
-            connectionString = $"Host={uri.Host};" +
-                               $"Port={uri.Port};" +
-                               $"Database={database};" +
-                               $"Username={username};" +
-                               $"Password={password};" +
-                               $"SSL Mode=Require;" +
-                               $"Trust Server Certificate=true;";
-
-            Console.WriteLine("String de conexão construída com sucesso!");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao processar DATABASE_URL: {ex.Message}");
-            // Fallback: tentar usar a string do appsettings
-            connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        }
-    }
-    else
-    {
-        // 2. Fallback para connection string do appsettings.json
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        Console.WriteLine("Usando DefaultConnection do appsettings.json");
-    }
-
-    if (string.IsNullOrEmpty(connectionString))
-    {
-        throw new InvalidOperationException("Nenhuma string de conexão configurada");
-    }
-
-    // Log seguro (escondendo a senha)
-    var maskedConnection = connectionString;
-    if (maskedConnection.Contains("Password="))
-    {
-        var parts = maskedConnection.Split(';');
-        for (int i = 0; i < parts.Length; i++)
-        {
-            if (parts[i].StartsWith("Password="))
-            {
-                parts[i] = "Password=***";
-                break;
-            }
-        }
-        maskedConnection = string.Join(";", parts);
-    }
-    Console.WriteLine($"Connection string configurada: {maskedConnection}");
-
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (string.IsNullOrWhiteSpace(connectionString) || connectionString == "__CONNECTION_STRING__")
+        throw new InvalidOperationException("ConnectionStrings:DefaultConnection não configurada");
     options.UseNpgsql(connectionString);
 });
 
@@ -116,6 +53,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secret = jwtSettings["Secret"]
              ?? throw new InvalidOperationException("JWT Secret não configurado no appsettings.json");
+if (secret == "__JWT_SECRET__" || secret.Length < 32)
+    throw new InvalidOperationException("JwtSettings:Secret deve ter pelo menos 32 caracteres");
 
 builder.Services.AddAuthentication(options =>
     {
@@ -263,26 +202,19 @@ if (app.Environment.IsDevelopment())
 // IMPORTANTE: CORS deve vir antes de outros middlewares
 app.UseCors("AllowFrontend");
 
-// Aplicar migrações automaticamente
+// Aplicar migrações antes de aceitar tráfego.
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    try
-    {
-        await dbContext.Database.MigrateAsync();
-        Console.WriteLine("Migrações aplicadas com sucesso!");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Erro ao aplicar migrações: {ex.Message}");
-        if (app.Environment.IsDevelopment()) throw;
-    }
+    await dbContext.Database.MigrateAsync();
 }
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<TokenRefreshMiddleware>();
+app.MapGet("/health", async (AppDbContext db) =>
+    await db.Database.CanConnectAsync() ? Results.Ok(new { status = "ok" }) : Results.StatusCode(503));
 app.MapControllers();
 
 app.Run();

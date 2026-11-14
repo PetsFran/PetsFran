@@ -1,0 +1,46 @@
+<section class="precos">
+  <header class="titulo">
+    <div>
+      <h2>Preços dos serviços</h2>
+      <p>Altere os valores usados nos próximos agendamentos. Os já salvos mantêm o valor registrado.</p>
+    </div>
+    <button type="button" class="fechar" aria-label="Fechar preços dos serviços" (click)="dialogRef.close()">×</button>
+  </header>
+
+  <p *ngIf="carregando" role="status">Carregando preços…</p>
+  <div *ngIf="erro" role="alert" class="alerta">{{ erro }} <button type="button" (click)="carregar()">Tentar novamente</button></div>
+  <p class="mensagem" *ngIf="mensagem" role="status" aria-live="polite">{{ mensagem }}</p>
+
+  <ng-container *ngIf="!carregando && !erro">
+    <div class="resumo">
+      <span><strong>{{ linhas.length }}</strong> preços no catálogo</span>
+      <span><strong>{{ personalizados }}</strong> personalizados</span>
+    </div>
+    <div class="filtros">
+      <div class="abas" role="group" aria-label="Tipo de serviço">
+        <button type="button" [class.ativo]="tipo === 'Base'" [attr.aria-pressed]="tipo === 'Base'" (click)="selecionarTipo('Base')">Serviços base</button>
+        <button type="button" [class.ativo]="tipo === 'Adicional'" [attr.aria-pressed]="tipo === 'Adicional'" (click)="selecionarTipo('Adicional')">Adicionais</button>
+      </div>
+      <label>Buscar serviço ou raça <input type="search" [(ngModel)]="filtro" placeholder="Ex.: Banho ou York"></label>
+      <label>Porte <select [(ngModel)]="porte"><option value="">Todos</option><option *ngFor="let opcao of portes" [value]="opcao">{{ nomePorte(opcao) }}</option></select></label>
+    </div>
+
+    <p class="contagem">{{ visiveis.length }} preços encontrados</p>
+    <div class="lista">
+      <form *ngFor="let item of visiveis; trackBy: identificar" class="linha" (ngSubmit)="salvar(item)">
+        <div class="descricao">
+          <strong>{{ item.nome }} <span *ngIf="item.personalizado" class="selo">Personalizado</span></strong>
+          <span>{{ item.tipo === 'Base' ? item.raca + ' · ' + nomePorte(item.porte) : 'Porte ' + nomePorte(item.porte) }}</span>
+          <small>Preço padrão: {{ formatarValor(item.valorPadrao) }}</small>
+        </div>
+        <label class="campo">Preço (R$)
+          <input type="text" inputmode="decimal" autocomplete="off" name="valor" [(ngModel)]="item.edicao" (ngModelChange)="item.erro = ''" [disabled]="item.salvando" [attr.aria-invalid]="item.erro ? 'true' : null">
+        </label>
+        <button type="submit" [disabled]="!podeSalvar(item)">{{ item.salvando ? 'Salvando…' : 'Salvar' }}</button>
+        <button type="button" class="restaurar" *ngIf="item.personalizado" [disabled]="item.salvando" (click)="restaurar(item)">Restaurar</button>
+        <span *ngIf="item.erro" role="alert" class="erro">{{ item.erro }}</span>
+      </form>
+    </div>
+    <p *ngIf="visiveis.length === 0">Nenhum serviço corresponde aos filtros.</p>
+  </ng-container>
+</section>

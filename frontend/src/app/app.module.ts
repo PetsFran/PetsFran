@@ -31,6 +31,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { FormLoginComponent } from './shared/form-login/form-login.component';
 import { ListaCachorrosComponent } from './shared/lista-cachorros/lista-cachorros.component';
 import { FormEdicaoCachorroComponent } from './shared/form-edicao-cachorro/form-edicao-cachorro.component';
+import { GerenciarPrecosComponent } from './shared/gerenciar-precos/gerenciar-precos.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { FormEdicaoCachorroComponent } from './shared/form-edicao-cachorro/form-
     FormEdicaoComponent,
     FormLoginComponent,
     ListaCachorrosComponent,
-    FormEdicaoCachorroComponent
+    FormEdicaoCachorroComponent,
+    GerenciarPrecosComponent
   ],
   imports: [
     BrowserModule,
