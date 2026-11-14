@@ -45,7 +45,7 @@ public class PetShopsController : ControllerBase
     {
         if (id != _petShopIdLogado)
         {
-            return Forbid("Você não tem permissão para visualizar dados de outro PetShop.");
+            return Forbid();
         }
 
         var petShop = await _context.PetShops
@@ -93,7 +93,7 @@ public class PetShopsController : ControllerBase
 
         // Verificar se está editando seu próprio perfil
         if (id != currentPetShopId)
-            return Forbid("Você não pode editar outro petshop");
+            return Forbid();
 
         var petShop = await _context.PetShops.FindAsync(id);
         if (petShop == null) return NotFound();
@@ -129,6 +129,9 @@ public class PetShopsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
+        if (_petShopIdLogado <= 0 || id != _petShopIdLogado)
+            return Forbid();
+
         var petShop = await _context.PetShops.FindAsync(id);
         if (petShop == null) return NotFound();
 
@@ -141,6 +144,9 @@ public class PetShopsController : ControllerBase
     [HttpGet("{id}/dashboard")]
     public async Task<ActionResult<object>> GetDashboard(int id)
     {
+        if (_petShopIdLogado <= 0 || id != _petShopIdLogado)
+            return Forbid();
+
         var petShop = await _context.PetShops
             .Include(p => p.Horarios)
             .ThenInclude(h => h.Cachorro)

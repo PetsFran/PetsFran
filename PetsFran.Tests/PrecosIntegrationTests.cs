@@ -55,6 +55,31 @@ public sealed class PrecosIntegrationTests : IClassFixture<PrecosDatabase>
         Assert.Equal(70m, new CalculaPrecosService(db).GetPrecoTotalHorario(CriarHorario(petShop.Id)));
     }
 
+    [Fact]
+    public async Task UmPetShopNaoPodeLerOuExcluirOutroPetShop()
+    {
+        await using var db = _database.CreateContext();
+        var primeiro = await CriarPetShop(db);
+        var segundo = await CriarPetShop(db);
+        var contextoHttp = new DefaultHttpContext
+        {
+            User = new ClaimsPrincipal(new ClaimsIdentity(
+                new[] { new Claim("PetShopId", primeiro.Id.ToString()) }, "test"))
+        };
+        var controller = new PetShopsController(db, null!, new HttpContextAccessor { HttpContext = contextoHttp })
+        {
+            ControllerContext = new ControllerContext { HttpContext = contextoHttp }
+        };
+
+        var dashboard = await controller.GetDashboard(segundo.Id);
+        var exclusao = await controller.Delete(segundo.Id);
+
+        Assert.IsType<ForbidResult>(dashboard.Result);
+        Assert.IsType<ForbidResult>(exclusao);
+        Assert.True(await db.PetShops.AnyAsync(p => p.Id == segundo.Id));
+        Assert.IsType<OkObjectResult>((await controller.GetDashboard(primeiro.Id)).Result);
+    }
+
     private static async Task<PetShop> CriarPetShop(AppDbContext db)
     {
         var petShop = new PetShop { Email = $"teste-{Guid.NewGuid():N}@example.com", Senha = "teste" };
