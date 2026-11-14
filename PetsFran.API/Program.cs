@@ -160,14 +160,8 @@ builder.Services.AddCors(options =>
             }
             else
             {
-                // URLs permitidas em produção
-                allowedOrigins.Add("https://petsfranagendamento.vercel.app");
-                allowedOrigins.Add("https://petsfranapi-production.up.railway.app");
-                
-                // TODOS OS DOMÍNIOS DO SEU FRONTEND
-                allowedOrigins.Add("https://pets-fran-agendamento-seven.vercel.app");
-                allowedOrigins.Add("https://pets-fran-agendamento-git-main-petsfrans-projects.vercel.app");
-                allowedOrigins.Add("https://pets-fran-agendamento-2mi0wr8iv-petsfrans-projects.vercel.app");
+                // Frontend público em produção
+                allowedOrigins.Add("https://petsfran.vercel.app");
             }
             
             policy.WithOrigins(allowedOrigins.ToArray())
@@ -207,6 +201,35 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await dbContext.Database.MigrateAsync();
+
+    // Provisionamento pontual: habilitado apenas enquanto ambas as variáveis estiverem presentes.
+    var seedEmail = app.Configuration["PetShopSeed:Email"];
+    var seedPasswordHash = app.Configuration["PetShopSeed:PasswordHash"];
+    if (!string.IsNullOrWhiteSpace(seedEmail) || !string.IsNullOrWhiteSpace(seedPasswordHash))
+    {
+        if (string.IsNullOrWhiteSpace(seedEmail) ||
+            string.IsNullOrWhiteSpace(seedPasswordHash) ||
+            !seedPasswordHash.StartsWith("$2", StringComparison.Ordinal))
+            throw new InvalidOperationException("Configuração de PetShopSeed incompleta ou inválida");
+
+        var petShop = await dbContext.PetShops.SingleOrDefaultAsync(p => p.Email == seedEmail);
+        if (petShop is null)
+        {
+            dbContext.PetShops.Add(new PetsFran.API.Models.Entities.PetShop
+            {
+                Email = seedEmail,
+                Senha = seedPasswordHash
+            });
+        }
+        else
+        {
+            petShop.Senha = seedPasswordHash;
+            petShop.RefreshTokenHash = null;
+            petShop.RefreshTokenExpiryTime = null;
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
 }
 
 app.UseHttpsRedirection();
