@@ -17,8 +17,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 .lista { display: grid; gap: 8px; }
 .linha { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: #fff8fa; }
 .descricao { flex: 1 1 230px; display: grid; gap: 2px; }
-.descricao span, .descricao small { color: var(--muted); }
-.descricao .selo { display: inline-block; margin-left: 5px; padding: 2px 6px; border-radius: 5px; background: var(--pink-light); color: var(--pink-dark); font-size: .7rem; vertical-align: middle; }
+.descricao span { color: var(--muted); }
 .campo input { width: 135px; }
 .campo input[aria-invalid=true] { border-color: #a3193b; }
 .erro, .alerta { color: #a3193b; }

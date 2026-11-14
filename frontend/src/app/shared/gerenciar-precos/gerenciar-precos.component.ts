@@ -49,10 +49,6 @@ export class GerenciarPrecosComponent implements OnInit {
       (!termo || `${item.nome} ${item.raca} ${item.porte}`.toLocaleLowerCase('pt-BR').includes(termo)));
   }
 
-  get personalizados(): number {
-    return this.linhas.filter(item => item.personalizado).length;
-  }
-
   identificar(_: number, item: LinhaPreco): string {
     return `${item.tipo}|${item.porte}|${item.raca}|${item.nome}`;
   }
@@ -96,23 +92,8 @@ export class GerenciarPrecosComponent implements OnInit {
     });
   }
 
-  restaurar(item: LinhaPreco): void {
-    item.salvando = true;
-    item.erro = '';
-    this.mensagem = '';
-    this.precos.restaurar(item).subscribe({
-      next: atualizado => {
-        this.atualizar(item, atualizado);
-        this.mensagem = `Preço padrão de ${item.nome} restaurado: ${this.formatarValor(atualizado.valor)}.`;
-      },
-      error: () => { item.erro = 'Não foi possível restaurar o preço.'; item.salvando = false; }
-    });
-  }
-
   private atualizar(item: LinhaPreco, atualizado: PrecoServico): void {
     item.valor = atualizado.valor;
-    item.valorPadrao = atualizado.valorPadrao;
-    item.personalizado = atualizado.personalizado;
     item.edicao = this.valorParaEdicao(atualizado.valor);
     item.salvando = false;
     item.erro = '';

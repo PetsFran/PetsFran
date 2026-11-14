@@ -8,9 +8,7 @@ export interface PrecoServico {
   porte: string;
   raca: string;
   nome: string;
-  valorPadrao: number;
   valor: number;
-  personalizado: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,9 +27,4 @@ export class PrecosService {
     });
   }
 
-  restaurar(item: PrecoServico): Observable<PrecoServico> {
-    return this.http.request<PrecoServico>('DELETE', this.url, {
-      body: { tipo: item.tipo, porte: item.porte, raca: item.raca, nome: item.nome }
-    });
-  }
 }

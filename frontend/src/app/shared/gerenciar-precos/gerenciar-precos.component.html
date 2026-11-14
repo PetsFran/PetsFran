@@ -14,7 +14,6 @@
   <ng-container *ngIf="!carregando && !erro">
     <div class="resumo">
       <span><strong>{{ linhas.length }}</strong> preços no catálogo</span>
-      <span><strong>{{ personalizados }}</strong> personalizados</span>
     </div>
     <div class="filtros">
       <div class="abas" role="group" aria-label="Tipo de serviço">
@@ -29,15 +28,13 @@
     <div class="lista">
       <form *ngFor="let item of visiveis; trackBy: identificar" class="linha" (ngSubmit)="salvar(item)">
         <div class="descricao">
-          <strong>{{ item.nome }} <span *ngIf="item.personalizado" class="selo">Personalizado</span></strong>
+          <strong>{{ item.nome }}</strong>
           <span>{{ item.tipo === 'Base' ? item.raca + ' · ' + nomePorte(item.porte) : 'Porte ' + nomePorte(item.porte) }}</span>
-          <small>Preço padrão: {{ formatarValor(item.valorPadrao) }}</small>
         </div>
         <label class="campo">Preço (R$)
           <input type="text" inputmode="decimal" autocomplete="off" name="valor" [(ngModel)]="item.edicao" (ngModelChange)="item.erro = ''" [disabled]="item.salvando" [attr.aria-invalid]="item.erro ? 'true' : null">
         </label>
         <button type="submit" [disabled]="!podeSalvar(item)">{{ item.salvando ? 'Salvando…' : 'Salvar' }}</button>
-        <button type="button" class="restaurar" *ngIf="item.personalizado" [disabled]="item.salvando" (click)="restaurar(item)">Restaurar</button>
         <span *ngIf="item.erro" role="alert" class="erro">{{ item.erro }}</span>
       </form>
     </div>

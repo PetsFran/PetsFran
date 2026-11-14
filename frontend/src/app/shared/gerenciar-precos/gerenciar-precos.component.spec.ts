@@ -6,22 +6,22 @@ import { GerenciarPrecosComponent } from './gerenciar-precos.component';
 import { PrecoServico, PrecosService } from '../../core/services/precos.service';
 
 describe('GerenciarPrecosComponent', () => {
-  const padrao: PrecoServico = {
+  const preco: PrecoServico = {
     tipo: 'Base', porte: 'Pequeno', raca: 'Vira lata', nome: 'Banho',
-    valorPadrao: 60, valor: 60, personalizado: false
+    valor: 60
   };
   let precos: jasmine.SpyObj<PrecosService>;
   let componente: GerenciarPrecosComponent;
 
   beforeEach(() => {
-    precos = jasmine.createSpyObj<PrecosService>('PrecosService', ['listar', 'salvar', 'restaurar']);
-    precos.listar.and.returnValue(of([padrao]));
+    precos = jasmine.createSpyObj<PrecosService>('PrecosService', ['listar', 'salvar']);
+    precos.listar.and.returnValue(of([preco]));
     componente = new GerenciarPrecosComponent(precos, {} as MatDialogRef<GerenciarPrecosComponent>);
     componente.ngOnInit();
   });
 
   it('aceita vírgula decimal e reflete o preço salvo', () => {
-    precos.salvar.and.returnValue(of({ ...padrao, valor: 87.5, personalizado: true }));
+    precos.salvar.and.returnValue(of({ ...preco, valor: 87.5 }));
     const linha = componente.linhas[0];
     linha.edicao = '87,50';
 
@@ -29,7 +29,6 @@ describe('GerenciarPrecosComponent', () => {
 
     expect(precos.salvar).toHaveBeenCalledWith(linha, 87.5);
     expect(linha.valor).toBe(87.5);
-    expect(linha.personalizado).toBeTrue();
     expect(linha.edicao).toBe('87,50');
   });
 
@@ -44,24 +43,10 @@ describe('GerenciarPrecosComponent', () => {
     expect(linha.erro).toContain('duas casas decimais');
   });
 
-  it('restaura o preço padrão depois de uma personalização', () => {
-    const linha = componente.linhas[0];
-    linha.valor = 87.5;
-    linha.personalizado = true;
-    precos.restaurar.and.returnValue(of(padrao));
-
-    componente.restaurar(linha);
-
-    expect(precos.restaurar).toHaveBeenCalledWith(linha);
-    expect(linha.valor).toBe(60);
-    expect(linha.personalizado).toBeFalse();
-    expect(linha.edicao).toBe('60,00');
-  });
-
-  it('mostra o catálogo e alterna entre serviços base e adicionais', () => {
-    precos.listar.and.returnValue(of([padrao, {
+  it('mostra apenas o preço atual e alterna entre serviços base e adicionais', async () => {
+    precos.listar.and.returnValue(of([preco, {
       tipo: 'Adicional', porte: 'P', raca: '', nome: 'Cortar Unha',
-      valorPadrao: 10, valor: 10, personalizado: false
+      valor: 10
     }]));
     TestBed.configureTestingModule({
       declarations: [GerenciarPrecosComponent],
@@ -73,8 +58,14 @@ describe('GerenciarPrecosComponent', () => {
     });
     const fixture = TestBed.createComponent(GerenciarPrecosComponent);
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
     const raiz = fixture.nativeElement as HTMLElement;
     expect(raiz.querySelector('.linha')?.textContent).toContain('Banho');
+    expect((raiz.querySelector('.linha input[name=valor]') as HTMLInputElement).value).toBe('60,00');
+    expect(raiz.textContent).not.toContain('Preço padrão');
+    expect(raiz.textContent).not.toContain('Personalizado');
+    expect(raiz.textContent).not.toContain('Restaurar');
 
     (raiz.querySelectorAll('.abas button')[1] as HTMLButtonElement).click();
     fixture.detectChanges();

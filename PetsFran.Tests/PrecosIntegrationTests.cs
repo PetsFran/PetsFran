@@ -19,7 +19,7 @@ public sealed class PrecosIntegrationTests : IClassFixture<PrecosDatabase>
     public PrecosIntegrationTests(PrecosDatabase database) => _database = database;
 
     [Fact]
-    public async Task PrecoPersonalizadoAfetaApenasOPetShopQueOAlterou()
+    public async Task AlteracaoDePrecoAfetaApenasOPetShopQueAFez()
     {
         await using var db = _database.CreateContext();
         var primeiro = await CriarPetShop(db);
@@ -34,24 +34,24 @@ public sealed class PrecosIntegrationTests : IClassFixture<PrecosDatabase>
         Assert.Equal(100m, calculadora.GetPrecoTotalHorario(CriarHorario(primeiro.Id)));
         Assert.Equal(70m, calculadora.GetPrecoTotalHorario(CriarHorario(segundo.Id)));
         Assert.Contains(calculadora.GetCatalogo(primeiro.Id), item =>
-            item.Tipo == "Base" && item.Nome == "Banho" && item.Raca == "Vira lata" && item.Personalizado);
-        Assert.DoesNotContain(calculadora.GetCatalogo(segundo.Id), item => item.Personalizado);
+            item.Tipo == "Base" && item.Nome == "Banho" && item.Raca == "Vira lata" && item.Valor == 90m);
+        Assert.Contains(calculadora.GetCatalogo(segundo.Id), item =>
+            item.Tipo == "Base" && item.Nome == "Banho" && item.Raca == "Vira lata" && item.Valor == 60m);
     }
 
     [Fact]
-    public async Task RestaurarRemoveAAlteracaoERecuperaOPrecoPadrao()
+    public async Task SalvarValorIgualAoInicialMantemOPrecoDoPetShop()
     {
         await using var db = _database.CreateContext();
         var petShop = await CriarPetShop(db);
         var controller = CriarController(db, petShop.Id);
-        var identificacao = new IdentificarPrecoServicoRequest("Base", "Pequeno", "Vira lata", "Banho");
-
         await controller.AlterarPreco(new AlterarPrecoServicoRequest(
-            identificacao.Tipo, identificacao.Porte, identificacao.Raca, identificacao.Nome, 90m));
-        var resposta = await controller.RestaurarPreco(identificacao);
+            "Base", "Pequeno", "Vira lata", "Banho", 90m));
+        var resposta = await controller.AlterarPreco(new AlterarPrecoServicoRequest(
+            "Base", "Pequeno", "Vira lata", "Banho", 60m));
 
         Assert.IsType<OkObjectResult>(resposta.Result);
-        Assert.False(await db.PrecosServicos.AnyAsync(p => p.PetShopId == petShop.Id));
+        Assert.Equal(60m, (await db.PrecosServicos.SingleAsync(p => p.PetShopId == petShop.Id)).Valor);
         Assert.Equal(70m, new CalculaPrecosService(db).GetPrecoTotalHorario(CriarHorario(petShop.Id)));
     }
 

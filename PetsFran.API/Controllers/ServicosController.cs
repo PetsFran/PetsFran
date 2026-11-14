@@ -55,11 +55,7 @@ public class ServicosController : ControllerBase
         var preco = await _context.PrecosServicos.FirstOrDefaultAsync(p =>
             p.PetShopId == petShopId && p.Tipo == item.Tipo && p.Porte == item.Porte &&
             p.Raca == item.Raca && p.Nome == item.Nome);
-        if (request.Valor == item.ValorPadrao)
-        {
-            if (preco != null) _context.PrecosServicos.Remove(preco);
-        }
-        else if (preco == null)
+        if (preco == null)
         {
             _context.PrecosServicos.Add(new PrecoServico
             {
@@ -70,26 +66,7 @@ public class ServicosController : ControllerBase
         else preco.Valor = request.Valor;
 
         await _context.SaveChangesAsync();
-        return Ok(item with { Valor = request.Valor, Personalizado = request.Valor != item.ValorPadrao });
-    }
-
-    [Authorize]
-    [HttpDelete("precos")]
-    public async Task<ActionResult<PrecoServicoCatalogo>> RestaurarPreco(IdentificarPrecoServicoRequest request)
-    {
-        if (!TryPetShopId(out var petShopId)) return Unauthorized();
-        var item = _calculaPrecosService.GetItemCatalogo(request.Tipo, request.Porte,
-            request.Raca, request.Nome);
-        if (item == null) return BadRequest("Serviço não encontrado no catálogo");
-        var preco = await _context.PrecosServicos.FirstOrDefaultAsync(p =>
-            p.PetShopId == petShopId && p.Tipo == item.Tipo && p.Porte == item.Porte &&
-            p.Raca == item.Raca && p.Nome == item.Nome);
-        if (preco != null)
-        {
-            _context.PrecosServicos.Remove(preco);
-            await _context.SaveChangesAsync();
-        }
-        return Ok(item);
+        return Ok(item with { Valor = request.Valor });
     }
 
     private bool TryPetShopId(out int petShopId) =>

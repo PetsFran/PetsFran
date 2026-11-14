@@ -96,12 +96,12 @@ namespace PetsFran.API.Services
             {
                 var item = _servicosBase.FirstOrDefault(s => StringsIguais(s.Porte, porte) && StringsIguais(s.Raca, raca));
                 return item != null && item.Servicos.TryGetValue(nome, out var valor)
-                    ? new PrecoServicoCatalogo("Base", item.Porte, item.Raca, nome, valor, valor, false)
+                    ? new PrecoServicoCatalogo("Base", item.Porte, item.Raca, nome, valor)
                     : null;
             }
             if (tipo == "Adicional" && _adicionais.TryGetValue(nome, out var portes) &&
                 portes.TryGetValue(porte.ToUpperInvariant(), out var preco))
-                return new PrecoServicoCatalogo("Adicional", porte.ToUpperInvariant(), "", nome, preco, preco, false);
+                return new PrecoServicoCatalogo("Adicional", porte.ToUpperInvariant(), "", nome, preco);
             return null;
         }
 
@@ -110,8 +110,7 @@ namespace PetsFran.API.Services
         {
             var alterado = alteracoes.FirstOrDefault(p => p.Tipo == tipo && p.Porte == porte &&
                 p.Raca == raca && p.Nome == nome);
-            return new PrecoServicoCatalogo(tipo, porte, raca, nome, padrao,
-                alterado?.Valor ?? padrao, alterado != null);
+            return new PrecoServicoCatalogo(tipo, porte, raca, nome, alterado?.Valor ?? padrao);
         }
 
         public List<string> GetRacasPorPorte(string? porte)

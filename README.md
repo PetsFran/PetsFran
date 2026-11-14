@@ -44,7 +44,7 @@ Os testes de integração criam e removem um banco temporário em uma instância
 
 ## Preços dos serviços
 
-No painel, abra **Preços dos Serviços** para consultar, filtrar e alterar os preços de serviços base (por raça e porte) e adicionais (por porte). Cada pet shop tem suas próprias alterações; sem alteração, vale o preço original do catálogo. **Restaurar** remove a alteração e volta ao preço padrão.
+No painel, abra **Preços dos Serviços** para consultar, filtrar e alterar os preços de serviços base (por raça e porte) e adicionais (por porte). Cada pet shop vê e edita seus preços atuais; os agendamentos já salvos mantêm o valor registrado.
 
 A API expõe `GET`, `PUT` e `DELETE /api/servicos/precos` para o pet shop autenticado. O `POST /api/servicos/calcular-preco` também exige autenticação e usa os preços desse pet shop. Agendamentos novos usam os preços atuais; agendamentos existentes preservam o valor salvo quando apenas a data é editada. Se os serviços de um agendamento forem alterados, o valor é recalculado.
 
