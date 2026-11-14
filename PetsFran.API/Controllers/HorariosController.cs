@@ -206,6 +206,9 @@ public class HorariosController : ControllerBase
             }
         }
 
+        // Um agendamento já salvo conserva o valor cobrado até que seus serviços mudem.
+        var servicosAlterados = false;
+
         // Atualiza outros campos
         if (!string.IsNullOrEmpty(dto.ServicoBaseSelecionado))
         {
@@ -224,6 +227,7 @@ public class HorariosController : ControllerBase
                 );
             }
 
+            servicosAlterados = servicosAlterados || horario.ServicoBaseSelecionado != dto.ServicoBaseSelecionado;
             horario.ServicoBaseSelecionado = dto.ServicoBaseSelecionado;
         }
 
@@ -232,10 +236,13 @@ public class HorariosController : ControllerBase
             return BadRequest("Há um serviço adicional indisponível na tabela de preços");
 
         if (dto.Adicionais != null)
+        {
+            servicosAlterados = servicosAlterados || !horario.Adicionais.SequenceEqual(dto.Adicionais);
             horario.Adicionais = dto.Adicionais;
+        }
 
-        // Recalcula valor se necessário
-        horario.ValorTotal = _calculaPrecosService.GetPrecoTotalHorario(horario);
+        if (servicosAlterados)
+            horario.ValorTotal = _calculaPrecosService.GetPrecoTotalHorario(horario);
 
         await _context.SaveChangesAsync();
 

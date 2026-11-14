@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using PetsFran.API.Data;
 using PetsFran.API.Models.Entities;
 using PetsFran.API.Services;
+using PetsFran.API.Models.DTOs.Precos;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace PetsFran.API.Controllers;
 
@@ -29,9 +32,74 @@ public class ServicosController : ControllerBase
     [HttpGet("adicionais")]
     public List<string> GetAdicionais() => _calculaPrecosService.GetServicosAdicionais();
     
+    [Authorize]
+    [HttpGet("precos")]
+    public ActionResult<List<PrecoServicoCatalogo>> GetPrecos()
+    {
+        if (!TryPetShopId(out var petShopId)) return Unauthorized();
+        return Ok(_calculaPrecosService.GetCatalogo(petShopId));
+    }
+
+    [Authorize]
+    [HttpPut("precos")]
+    public async Task<ActionResult<PrecoServicoCatalogo>> AlterarPreco(AlterarPrecoServicoRequest request)
+    {
+        if (!TryPetShopId(out var petShopId)) return Unauthorized();
+        var item = _calculaPrecosService.GetItemCatalogo(request.Tipo, request.Porte,
+            request.Raca, request.Nome);
+        if (item == null) return BadRequest("Serviço não encontrado no catálogo");
+        if (request.Valor < 0 || request.Valor > 99999999.99m ||
+            decimal.Round(request.Valor, 2) != request.Valor)
+            return BadRequest("Informe um preço entre 0 e 99999999,99 com até duas casas decimais");
+
+        var preco = await _context.PrecosServicos.FirstOrDefaultAsync(p =>
+            p.PetShopId == petShopId && p.Tipo == item.Tipo && p.Porte == item.Porte &&
+            p.Raca == item.Raca && p.Nome == item.Nome);
+        if (request.Valor == item.ValorPadrao)
+        {
+            if (preco != null) _context.PrecosServicos.Remove(preco);
+        }
+        else if (preco == null)
+        {
+            _context.PrecosServicos.Add(new PrecoServico
+            {
+                PetShopId = petShopId, Tipo = item.Tipo, Porte = item.Porte,
+                Raca = item.Raca, Nome = item.Nome, Valor = request.Valor
+            });
+        }
+        else preco.Valor = request.Valor;
+
+        await _context.SaveChangesAsync();
+        return Ok(item with { Valor = request.Valor, Personalizado = request.Valor != item.ValorPadrao });
+    }
+
+    [Authorize]
+    [HttpDelete("precos")]
+    public async Task<ActionResult<PrecoServicoCatalogo>> RestaurarPreco(IdentificarPrecoServicoRequest request)
+    {
+        if (!TryPetShopId(out var petShopId)) return Unauthorized();
+        var item = _calculaPrecosService.GetItemCatalogo(request.Tipo, request.Porte,
+            request.Raca, request.Nome);
+        if (item == null) return BadRequest("Serviço não encontrado no catálogo");
+        var preco = await _context.PrecosServicos.FirstOrDefaultAsync(p =>
+            p.PetShopId == petShopId && p.Tipo == item.Tipo && p.Porte == item.Porte &&
+            p.Raca == item.Raca && p.Nome == item.Nome);
+        if (preco != null)
+        {
+            _context.PrecosServicos.Remove(preco);
+            await _context.SaveChangesAsync();
+        }
+        return Ok(item);
+    }
+
+    private bool TryPetShopId(out int petShopId) =>
+        int.TryParse(User.FindFirst("PetShopId")?.Value, out petShopId) && petShopId > 0;
+
+    [Authorize]
     [HttpPost("calcular-preco")]
     public ActionResult<decimal> CalcularPreco([FromBody] CalculoPrecoRequest request)
     {
+        if (!TryPetShopId(out var petShopId)) return Unauthorized();
         // Criar um objeto Horario temporário para cálculo
         var horarioTemp = new Horario
         {
@@ -41,7 +109,8 @@ public class ServicosController : ControllerBase
                 Porte = request.Porte
             },
             ServicoBaseSelecionado = request.ServicoBase,
-            Adicionais = request.Adicionais ?? new List<string>()
+            Adicionais = request.Adicionais ?? new List<string>(),
+            PetShopId = petShopId
         };
     
         if (!_calculaPrecosService.GetServicosPorRacaPorte(request.Raca, request.Porte)

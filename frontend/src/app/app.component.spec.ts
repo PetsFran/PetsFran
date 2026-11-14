@@ -1,29 +1,18 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { AppComponent } from './app.component';
+import { AuthService } from './core/services/auth.service';
+import { GerenciarPrecosComponent } from './shared/gerenciar-precos/gerenciar-precos.component';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    declarations: [AppComponent]
-  }));
+  it('abre a gestão de preços pelo painel', () => {
+    const dialog = jasmine.createSpyObj<MatDialog>('MatDialog', ['open']);
+    const auth = jasmine.createSpyObj<AuthService>('AuthService', ['getToken']);
+    const router = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    const componente = new AppComponent(dialog, auth, router);
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    componente.abrirGerenciarPrecos();
 
-  it(`should have as title 'PetsFranTeste'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('PetsFranTeste');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('PetsFranTeste app is running!');
+    expect(dialog.open).toHaveBeenCalledWith(GerenciarPrecosComponent, jasmine.objectContaining({ width: '900px' }));
   });
 });

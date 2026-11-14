@@ -40,15 +40,23 @@ dotnet build PetsFran.sln
 npm run build --prefix frontend
 ```
 
-O build de produção Angular usa `frontend/src/environments/environment.prod.ts`. Ele continua apontando para a API publicada no Railway; a unificação dos repositórios não troca automaticamente a URL de produção.
+Os testes de integração criam e removem um banco temporário em uma instância PostgreSQL de testes. Defina `PETSFRAN_TEST_ADMIN_CONNECTION` com uma conexão administrativa dessa instância e execute `dotnet test PetsFran.sln`. Não use uma instância de produção para os testes.
+
+## Preços dos serviços
+
+No painel, abra **Preços dos Serviços** para consultar, filtrar e alterar os preços de serviços base (por raça e porte) e adicionais (por porte). Cada pet shop tem suas próprias alterações; sem alteração, vale o preço original do catálogo. **Restaurar** remove a alteração e volta ao preço padrão.
+
+A API expõe `GET`, `PUT` e `DELETE /api/servicos/precos` para o pet shop autenticado. O `POST /api/servicos/calcular-preco` também exige autenticação e usa os preços desse pet shop. Agendamentos novos usam os preços atuais; agendamentos existentes preservam o valor salvo quando apenas a data é editada. Se os serviços de um agendamento forem alterados, o valor é recalculado.
+
+O build de produção Angular usa `frontend/src/environments/environment.prod.ts` com `/api`. O `frontend/vercel.json` encaminha essas chamadas à API publicada no Railway; assim, o navegador usa a mesma origem para o frontend e os cookies de sessão.
 
 ## Deploy
 
 | Serviço | Configuração no mesmo repositório |
 | --- | --- |
-| Railway (API) | Diretório raiz `/`, Dockerfile `Dockerfile`. Configure `DATABASE_URL` ou `ConnectionStrings__DefaultConnection` e as chaves `JwtSettings__*` no serviço. |
+| Railway (API) | Diretório raiz `/`, Dockerfile `Dockerfile`, porta `8080` e healthcheck `/health`. Configure `ConnectionStrings__DefaultConnection` com referências ao PostgreSQL e as chaves `JwtSettings__Secret`, `JwtSettings__Issuer` e `JwtSettings__Audience`. |
 | Vercel (Angular) | Root Directory `frontend`, comando de instalação `npm ci`, comando de build `npm run build`, Output Directory `dist/PetsFranAgendamento`. |
 
-Após mudar o repositório conectado ao Vercel, confirme a URL da API em `environment.prod.ts`. Se o domínio do frontend mudar, inclua a nova origem na política de CORS da API. O arquivo `frontend/vercel.json` encaminha rotas da aplicação Angular para `index.html`.
+Se o domínio da API mudar, atualize primeiro a regra `/api/:path*` em `frontend/vercel.json`. A regra seguinte encaminha as demais rotas da aplicação Angular para `index.html`.
 
 O histórico anterior do frontend permanece no repositório `PetsFranAgendamento`; esta importação copia o estado do código, sem reescrever o histórico Git da API.

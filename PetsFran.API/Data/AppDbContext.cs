@@ -10,9 +10,17 @@ namespace PetsFran.API.Data
         public DbSet<PetShop> PetShops { get; set; }
         public DbSet<Horario> Horarios { get; set; }
         public DbSet<Cachorro> Cachorros { get; set; }
+        public DbSet<PrecoServico> PrecosServicos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<PrecoServico>(entity =>
+            {
+                entity.Property(p => p.Valor).HasPrecision(10, 2);
+                entity.HasIndex(p => new { p.PetShopId, p.Tipo, p.Porte, p.Raca, p.Nome }).IsUnique();
+                entity.HasOne(p => p.PetShop).WithMany()
+                    .HasForeignKey(p => p.PetShopId).OnDelete(DeleteBehavior.Cascade);
+            });
             // Configuração do Horario
             modelBuilder.Entity<Horario>(entity =>
             {
